@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transmon Capacitance Solver</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1e2530;
+    --border: rgba(99,153,255,0.18);
+    --border2: rgba(99,153,255,0.35);
+    --accent: #4d9fff;
+    --accent2: #7bc8ff;
+    --green: #3fb950;
+    --amber: #d29922;
+    --red: #f85149;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #6e7681;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --radius: 8px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 2rem 1.5rem 4rem;
+    line-height: 1.6;
+  }
+
+  .header {
+    max-width: 860px;
+    margin: 0 auto 2.5rem;
+    border-bottom: 0.5px solid var(--border);
+    padding-bottom: 1.5rem;
+  }
+  .header h1 {
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.3rem;
+  }
+  .header p {
+    font-size: 0.83rem;
+    color: var(--text2);
+    font-weight: 300;
+  }
+
+  .layout {
+    max-width: 860px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .panel {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+
+  .panel-title {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+
+  .param-group {
+    margin-bottom: 1.4rem;
+  }
+  .param-group:last-child { margin-bottom: 0; }
+
+  .param-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.45rem;
+  }
+  .param-name {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--text2);
+  }
+  .param-val {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--accent2);
+    font-weight: 500;
+  }
+
+  input[type=range] {
+    width: 100%;
+    height: 3px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--bg3);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    border: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg2);
+    cursor: pointer;
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg2);
+    cursor: pointer;
+  }
+  input[type=range]:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px rgba(77,159,255,0.25);
+  }
+
+  .number-input {
+    width: 100%;
+    margin-top: 0.4rem;
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 5px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    padding: 5px 8px;
+    outline: none;
+  }
+  .number-input:focus {
+    border-color: var(--accent);
+  }
+
+  .divider {
+    height: 0.5px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  .solve-btn {
+    width: 100%;
+    padding: 0.65rem;
+    background: var(--accent);
+    color: #0d1117;
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    margin-top: 1rem;
+  }
+  .solve-btn:hover { background: var(--accent2); }
+  .solve-btn:active { transform: scale(0.98); }
+
+  .results-panel { display: flex; flex-direction: column; gap: 1rem; }
+
+  .result-section {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.6rem;
+  }
+
+  .metric-card {
+    background: var(--bg3);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    border: 0.5px solid transparent;
+  }
+  .metric-card.ok { border-color: rgba(63,185,80,0.3); }
+  .metric-card.warn { border-color: rgba(210,153,34,0.3); }
+  .metric-card.error { border-color: rgba(248,81,73,0.3); }
+
+  .metric-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+  .metric-value {
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .metric-sub {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text3);
+    margin-top: 0.15rem;
+  }
+  .metric-sub.ok { color: var(--green); }
+  .metric-sub.warn { color: var(--amber); }
+
+  .caps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.6rem;
+  }
+
+  .cap-card {
+    background: var(--bg3);
+    border: 0.5px solid rgba(77,159,255,0.2);
+    border-radius: 6px;
+    padding: 0.9rem 1rem;
+    text-align: center;
+  }
+  .cap-symbol {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+  }
+  .cap-val {
+    font-family: var(--mono);
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .cap-unit {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text3);
+    margin-top: 0.1rem;
+  }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+  .status-bar.solving { background: rgba(77,159,255,0.1); color: var(--accent2); border: 0.5px solid rgba(77,159,255,0.25); }
+  .status-bar.converged { background: rgba(63,185,80,0.1); color: var(--green); border: 0.5px solid rgba(63,185,80,0.25); }
+  .status-bar.failed { background: rgba(248,81,73,0.1); color: var(--red); border: 0.5px solid rgba(248,81,73,0.25); }
+  .status-bar.idle { background: var(--bg3); color: var(--text3); border: 0.5px solid var(--border); }
+
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot.green { background: var(--green); }
+  .dot.blue { background: var(--accent); animation: pulse 1.2s infinite; }
+  .dot.red { background: var(--red); }
+  .dot.gray { background: var(--text3); }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
+
+  .iter-info {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text3);
+    margin-top: 0.4rem;
+    padding: 0 0.1rem;
+  }
+
+  .verify-rows {
+    margin-top: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .verify-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.45rem 0.75rem;
+    background: var(--bg3);
+    border-radius: 5px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+  }
+  .verify-lhs { color: var(--text2); }
+  .verify-rhs { color: var(--text); }
+  .verify-delta { font-size: 0.65rem; color: var(--text3); margin-left: 0.5rem; }
+  .verify-ok { color: var(--green); }
+  .verify-warn { color: var(--amber); }
+
+  .placeholder {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 640px) {
+    .layout { grid-template-columns: 1fr; }
+    .result-grid, .caps-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>transmon_capacitance_solver</h1>
+  <p>Solves for C<sub>J</sub>, C<sub>Q</sub>, C<sub>D</sub> given target qubit/drive frequencies and coupling strength. Equations follow the dispersive transmon model.</p>
+</div>
+
+<div class="layout">
+
+  <div>
+    <div class="panel">
+      <div class="panel-title">Parameters</div>
+
+      <div class="param-group">
+        <div class="param-label">
+          <span class="param-name">ratioQ &nbsp;(E<sub>JQ</sub>/E<sub>CQ</sub>)</span>
+          <span class="param-val" id="rQ-val">70</span>
+        </div>
+        <input type="range" id="rQ" min="10" max="200" step="1" value="70">
+        <input type="number" class="number-input" id="rQ-num" value="70" min="10" max="200" step="1">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">
+          <span class="param-name">ratioD &nbsp;(E<sub>JD</sub>/E<sub>CD</sub>)</span>
+          <span class="param-val" id="rD-val">80</span>
+        </div>
+        <input type="range" id="rD" min="10" max="200" step="1" value="80">
+        <input type="number" class="number-input" id="rD-num" value="80" min="10" max="200" step="1">
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="param-group">
+        <div class="param-label">
+          <span class="param-name">ω<sub>Q</sub> target (GHz)</span>
+          <span class="param-val" id="wQ-val">4.50</span>
+        </div>
+        <input type="range" id="wQ" min="2" max="10" step="0.05" value="4.5">
+        <input type="number" class="number-input" id="wQ-num" value="4.5" min="2" max="10" step="0.05">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">
+          <span class="param-name">ω<sub>D</sub> target (GHz)</span>
+          <span class="param-val" id="wD-val">7.00</span>
+        </div>
+        <input type="range" id="wD" min="2" max="12" step="0.05" value="7.0">
+        <input type="number" class="number-input" id="wD-num" value="7.0" min="2" max="12" step="0.05">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">
+          <span class="param-name">J target (MHz)</span>
+          <span class="param-val" id="tJ-val">−200</span>
+        </div>
+        <input type="range" id="tJ" min="-600" max="-10" step="5" value="-200">
+        <input type="number" class="number-input" id="tJ-num" value="-200" min="-600" max="-10" step="5">
+      </div>
+
+      <button class="solve-btn" onclick="solve()">SOLVE ↳</button>
+    </div>
+  </div>
+
+  <div class="results-panel" id="results">
+    <div class="result-section">
+      <div class="panel-title">Solution</div>
+      <div class="placeholder">Set parameters and press SOLVE</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const e = 1.602176634e-19;
+const h = 6.626e-34;
+
+function syncSliderNum(sliderId, numId, displayId, fmt) {
+  const sl = document.getElementById(sliderId);
+  const nm = document.getElementById(numId);
+  const dv = document.getElementById(displayId);
+  function update(v) {
+    sl.value = v; nm.value = v;
+    if (dv) dv.textContent = fmt(v);
+  }
+  sl.addEventListener('input', () => update(sl.value));
+  nm.addEventListener('change', () => update(nm.value));
+}
+
+syncSliderNum('rQ','rQ-num','rQ-val', v => (+v).toFixed(0));
+syncSliderNum('rD','rD-num','rD-val', v => (+v).toFixed(0));
+syncSliderNum('wQ','wQ-num','wQ-val', v => (+v).toFixed(2));
+syncSliderNum('wD','wD-num','wD-val', v => (+v).toFixed(2));
+syncSliderNum('tJ','tJ-num','tJ-val', v => {
+  const n = +v; return (n >= 0 ? '' : '−') + Math.abs(n).toFixed(0);
+});
+
+function physics(CJ, CQ, CD, rQ, rD) {
+  const denom = CD*CQ + CD*CJ + CQ*CJ;
+  const ECQ = (e*e/2) * (CD + CJ) / denom;
+  const ECD = (e*e/2) * (CQ + CJ) / denom;
+  const EJQ = rQ * ECQ;
+  const EJD = rD * ECD;
+  const wQ  = Math.sqrt(8*ECQ*EJQ) - ECQ;
+  const wD  = Math.sqrt(8*ECD*EJD) - ECD;
+  const J   = -4 * e*e * (CJ / denom) * Math.pow(rD*rQ/1024, 0.25);
+  return { wQ, wD, J, ECQ, ECD, EJQ, EJD };
+}
+
+function solve() {
+  const rQ = +document.getElementById('rQ').value;
+  const rD = +document.getElementById('rD').value;
+  const twQ = +document.getElementById('wQ').value * 1e9 * h;
+  const twD = +document.getElementById('wD').value * 1e9 * h;
+  const tJ  = +document.getElementById('tJ').value * 1e6 * h;
+
+  const res = document.getElementById('results');
+  res.innerHTML = `<div class="result-section">
+    <div class="status-bar solving"><div class="dot blue"></div>Solving via Newton–Raphson…</div>
+  </div>`;
+
+  setTimeout(() => {
+    let CJ = 1.89e-15, CQ = 79.7e-15, CD = 69.2e-15;
+    const eps = 1e-18;
+    let iters = 0, converged = false;
+
+    for (let iter = 0; iter < 2000; iter++) {
+      iters++;
+      const p = physics(CJ, CQ, CD, rQ, rD);
+      const f1 = p.wQ - twQ, f2 = p.wD - twD, f3 = p.J - tJ;
+      if (Math.abs(f1) < 1e-30 && Math.abs(f2) < 1e-30 && Math.abs(f3) < 1e-40) { converged = true; break; }
+
+      const d = eps;
+      const p1 = physics(CJ+d, CQ, CD, rQ, rD);
+      const p2 = physics(CJ, CQ+d, CD, rQ, rD);
+      const p3 = physics(CJ, CQ, CD+d, rQ, rD);
+
+      const J11=(p1.wQ-p.wQ)/d, J12=(p2.wQ-p.wQ)/d, J13=(p3.wQ-p.wQ)/d;
+      const J21=(p1.wD-p.wD)/d, J22=(p2.wD-p.wD)/d, J23=(p3.wD-p.wD)/d;
+      const J31=(p1.J - p.J)/d, J32=(p2.J - p.J)/d, J33=(p3.J - p.J)/d;
+
+      const det = J11*(J22*J33-J23*J32) - J12*(J21*J33-J23*J31) + J13*(J21*J32-J22*J31);
+      if (Math.abs(det) < 1e-300) break;
+
+      const i11=(J22*J33-J23*J32)/det, i12=-(J12*J33-J13*J32)/det, i13=(J12*J23-J13*J22)/det;
+      const i21=-(J21*J33-J23*J31)/det, i22=(J11*J33-J13*J31)/det, i23=-(J11*J23-J13*J21)/det;
+      const i31=(J21*J32-J22*J31)/det, i32=-(J11*J32-J12*J31)/det, i33=(J11*J22-J12*J21)/det;
+
+      const dCJ = i11*f1 + i12*f2 + i13*f3;
+      const dCQ = i21*f1 + i22*f2 + i23*f3;
+      const dCD = i31*f1 + i32*f2 + i33*f3;
+
+      CJ -= dCJ; CQ -= dCQ; CD -= dCD;
+
+      if (CJ < 1e-18) CJ = 1e-18;
+      if (CQ < 1e-18) CQ = 1e-18;
+      if (CD < 1e-18) CD = 1e-18;
+
+      const norm = Math.sqrt(f1*f1/(twQ*twQ) + f2*f2/(twD*twD) + f3*f3/(tJ*tJ));
+      if (norm < 1e-9) { converged = true; break; }
+    }
+
+    const p = physics(CJ, CQ, CD, rQ, rD);
+    const wQ_GHz = p.wQ / h / 1e9;
+    const wD_GHz = p.wD / h / 1e9;
+    const J_MHz  = p.J  / h / 1e6;
+
+    const errQ = Math.abs((p.wQ - twQ)/twQ * 100);
+    const errD = Math.abs((p.wD - twD)/twD * 100);
+    const errJ = Math.abs((p.J  - tJ) /tJ  * 100);
+
+    function cls(e) { return e < 0.01 ? 'ok' : e < 1 ? 'warn' : 'error'; }
+    function dotcls(e) { return e < 0.01 ? 'green' : e < 1 ? 'blue' : 'red'; }
+
+    const statusClass = converged ? 'converged' : 'failed';
+    const statusDot = converged ? 'green' : 'red';
+    const statusMsg = converged
+      ? `Converged in ${iters} iterations`
+      : `Did not converge after ${iters} iterations — try different initial targets`;
+
+    res.innerHTML = `
+    <div class="result-section">
+      <div class="status-bar ${statusClass}"><div class="dot ${statusDot}"></div>${statusMsg}</div>
+
+      <div class="panel-title" style="margin-top:1rem">Capacitances</div>
+      <div class="caps-grid">
+        <div class="cap-card">
+          <div class="cap-symbol">C<sub>J</sub></div>
+          <div class="cap-val">${(CJ/1e-15).toFixed(3)}</div>
+          <div class="cap-unit">fF</div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-symbol">C<sub>Q</sub></div>
+          <div class="cap-val">${(CQ/1e-15).toFixed(3)}</div>
+          <div class="cap-unit">fF</div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-symbol">C<sub>D</sub></div>
+          <div class="cap-val">${(CD/1e-15).toFixed(3)}</div>
+          <div class="cap-unit">fF</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-section">
+      <div class="panel-title">Verification</div>
+      <div class="verify-rows">
+        <div class="verify-row">
+          <span class="verify-lhs">ω<sub>Q</sub></span>
+          <span>
+            <span class="verify-rhs">${wQ_GHz.toFixed(4)} GHz</span>
+            <span class="verify-delta verify-${cls(errQ)}">Δ = ${errQ.toFixed(4)}%</span>
+          </span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-lhs">ω<sub>D</sub></span>
+          <span>
+            <span class="verify-rhs">${wD_GHz.toFixed(4)} GHz</span>
+            <span class="verify-delta verify-${cls(errD)}">Δ = ${errD.toFixed(4)}%</span>
+          </span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-lhs">J</span>
+          <span>
+            <span class="verify-rhs">${J_MHz.toFixed(3)} MHz</span>
+            <span class="verify-delta verify-${cls(errJ)}">Δ = ${errJ.toFixed(4)}%</span>
+          </span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-lhs">E<sub>JQ</sub>/E<sub>CQ</sub></span>
+          <span>
+            <span class="verify-rhs">${(p.EJQ/p.ECQ).toFixed(4)}</span>
+            <span class="verify-delta">(target: ${rQ})</span>
+          </span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-lhs">E<sub>JD</sub>/E<sub>CD</sub></span>
+          <span>
+            <span class="verify-rhs">${(p.EJD/p.ECD).toFixed(4)}</span>
+            <span class="verify-delta">(target: ${rD})</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-section">
+      <div class="panel-title">Charging energies</div>
+      <div class="result-grid">
+        <div class="metric-card">
+          <div class="metric-label">E<sub>CQ</sub></div>
+          <div class="metric-value">${(p.ECQ/h/1e6).toFixed(2)}</div>
+          <div class="metric-sub">MHz</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">E<sub>CD</sub></div>
+          <div class="metric-value">${(p.ECD/h/1e6).toFixed(2)}</div>
+          <div class="metric-sub">MHz</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">E<sub>JQ</sub></div>
+          <div class="metric-value">${(p.EJQ/h/1e9).toFixed(3)}</div>
+          <div class="metric-sub">GHz</div>
+        </div>
+      </div>
+    </div>`;
+  }, 20);
+}
+</script>
+</body>
+</html>
