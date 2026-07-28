@@ -1,6 +1,8 @@
 # Welcome
 This repository includes Mathematica notebooks and Jupyter notebooks for calculating needed capacitances for desired couplings between Transmon and Readout resonator 
+
 ![qubit-resonator circuit](qubit_resonator_coupling.svg)
+
 and between two Transmons (in our case a transmon-dissipator).
 ![dissipator circuit](qubit_dissipator_coupling.svg)
 
