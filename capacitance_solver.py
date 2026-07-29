@@ -41,11 +41,11 @@ def g_func(ratioQ, L, CR, Cg, CQ):
     correction = 1 + (-ec) / (2 * omegaQ(ratioQ, CR, Cg, CQ))
     return prefactor * (inside**0.25) * correction
 
-# ── Derive EJ/EC from frequency and EC targets ────────────────────────
+
 def get_ratio(omegaQ_Hz, ECQ_Hz):
     return ((omegaQ_Hz + ECQ_Hz)**2) / (8 * ECQ_Hz**2)
 
-# ── Adaptive initial guess ────────────────────────────────────────────
+
 def make_initial_guess(omegaQ_Hz, omegaR_Hz, ECQ_Hz, g_Hz):
     """
     Physically motivated starting point that scales correctly
@@ -75,7 +75,6 @@ def make_initial_guess(omegaQ_Hz, omegaR_Hz, ECQ_Hz, g_Hz):
 
     return CQ0, CR0, Cg0, L0
 
-# ── Bracket finder ────────────────────────────────────────────────────
 def find_bracket(func, lo, hi, n=500):
     """Scan [lo,hi] and return the first sub-interval with a sign change."""
     xs = np.linspace(lo, hi, n)
@@ -89,7 +88,6 @@ def find_bracket(func, lo, hi, n=500):
         return False, None, None
     return True, xs_f[idx[0]], xs_f[idx[0]+1]
 
-# ── Main solver ───────────────────────────────────────────────────────
 def solve(targetOmegaQ_Hz, targetOmegaR_Hz, targetECQ_Hz, targetg_Hz,
           verbose=True):
     """
@@ -134,7 +132,7 @@ def solve(targetOmegaQ_Hz, targetOmegaR_Hz, targetECQ_Hz, targetg_Hz,
         print(f"  Cg = {Cg0:.3f} fF")
         print(f"  L  = {L0:.3f} nH")
 
-    # ── Sequential iteration ──────────────────────────────────────────
+   
     converged = False
     for iteration in range(500):
 
@@ -191,9 +189,9 @@ def solve(targetOmegaQ_Hz, targetOmegaR_Hz, targetECQ_Hz, targetg_Hz,
             converged = True
             break
 
-    # ── Polish with least_squares ─────────────────────────────────────
+   
     x0 = [CQ/fF, CR/fF, Cg/fF, L/nH]
-    # bounds are ±90% / 10x around sequential solution — always valid
+  
     lower = [v * 0.1  for v in x0]
     upper = [v * 10.0 for v in x0]
 

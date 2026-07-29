@@ -1,0 +1,52 @@
+Clear ["Global'*"]
+
+(*Physical Constants*)
+e = 1.602176634*^-19; (*Charge of an electron*)
+h = 6.62607015*^-34; (*Planck's constant*)
+hbar = h/(2*Pi); (*Reduced Planck's constant*)
+
+(*Capacitance Matrix Energies*)
+ECQ[CR_, Cg_, CQ_]:= (e^2/2) * (CR + Cg) / (CQ * CR + CR * Cg + CQ * Cg)
+ECR[CR_, Cg_, CQ_]:= (e^2/2) * (CQ + Cg) / (CQ * CR + CR * Cg + CQ * Cg)
+
+(*Inductive Energy*)
+EL[L_]:= hbar^2 / (4 * e^2 * L)
+
+(*EJ from Ratio*)
+ratioQ = 70; (*Change this based on derired values*)
+EJQ[CR_, Cg_, CQ_]:= ratioQ * ECQ[CR, Cg, CQ]
+
+(*Frequencies*)
+omegaQ[CR_, Cg_, CQ_]:= Sqrt[8 * EJQ[CR, Cg, CQ] * ECQ[CR, Cg, CQ]] - ECQ[CR, Cg, CQ]
+omegaR[L_, CR_, Cg_, CQ_] := Sqrt[8 * EL[L] * ECR[CR, Cg, CQ]]
+
+(*Anharmonicity*)
+etaQ[CR_, Cg_, CQ_] := -ECQ[CR, Cg, CQ]
+
+(*Coupling*)
+g[L_, CR_, Cg_, CQ_] := (-4 * e^2) * (Cg / (CR * CQ + CR * Cg + CQ * Cg)) *(EL[L] / (32 * ECR[CR, Cg, CQ]) * EJQ[CR, Cg, CQ] / (32 * ECQ[CR, Cg, CQ]))^(1 / 4) *(1 + etaQ[CR, Cg, CQ] / (2 * omegaQ[CR, Cg, CQ]))
+
+(* Target Values *)
+targetOmegaQ = 4.5*^9 * h;
+targetOmegaR = 5.75*^9 * h;
+targetg = -50*^6 * h; 
+targetECQ = 200*^6 * h;
+
+(* Solve *)
+sol = FindRoot[{ECQ[CR, Cg, CQ] == targetECQ, omegaQ[CR, Cg, CQ] == targetOmegaQ, omegaR[L, CR, Cg, CQ] == targetOmegaR, g[L, CR, Cg, CQ] == targetg}, {{CR, 500*^-15}, {Cg, 5*^-15}, {CQ, 90*^-15}, {L, 2*^-9}}]
+CQsol = CQ /. sol;
+CRsol = CR /. sol;
+Cgsol = Cg /. sol;
+Lsol = L /. sol;
+
+(* Output *)
+Print["CQ = ", CQsol/10^-15, " fF"];
+Print["CR = ", CRsol/10^-15, " fF"];
+Print["Cg = ", Cgsol/10^-15, " fF"];
+Print["L = ", Lsol/10^-9, " nH"];
+
+(* Verify *)
+Print["Verified ECQ = ", ECQ[CRsol, Cgsol, CQsol]/10^-6, " MHz"];
+Print["Verified OmegaQ = ", omegaQ[CRsol, Cgsol, CQsol]/10^-9, " GHz"];
+Print["Verified OmegaR = ", omegaR[Lsol, CRsol, Cgsol, CQsol]/10^-9, " GHz"];
+Print["Verified g = ", g[Lsol, CRsol, Cgsol, CQsol]/10^-6, " MHz"];
