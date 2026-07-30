@@ -58,7 +58,13 @@
     color: var(--text2);
     font-weight: 300;
   }
-
+.header img {
+    display: block;
+    margin: 1.5rem auto 0;
+    width: 500px;
+    max-width: 90%;
+    height: auto;
+}
   .layout {
     max-width: 860px;
     margin: 0 auto;
@@ -327,18 +333,31 @@
     font-size: 0.75rem;
   }
 
+  .caps-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.6rem;
+  }
+
+  .section-gap { margin-top: 3rem; }
+
   @media (max-width: 640px) {
     .layout { grid-template-columns: 1fr; }
     .result-grid, .caps-grid { grid-template-columns: repeat(2, 1fr); }
+    .caps-grid-4 { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 </head>
 <body>
+<div class="header">
+  <h1>Device Design Calculators</h1>
+</div>
 
 <div class="header">
-  <h1>Capacitance Solvers</h1>
+  <h1>Qubit-Qubit Coupling Capacitance Solver</h1>
   <p>Solves for C<sub>J</sub>, C<sub>Q</sub>, C<sub>D</sub> given target qubit/drive frequencies and coupling strength. Equations follow the dispersive transmon model.</p>
-<img src="qubit_dissipator_coupling.svg" alt="Two coupled transmons">
+  <img src="qubit_dissipator_coupling.svg" alt="Two coupled transmons">
 </div>
 
 <div class="layout">
@@ -407,9 +426,80 @@
 
 </div>
 
+<div class="header section-gap">
+  <h1>Qubit–Resonator Capacitance Solver</h1>
+  <p>Solves for C<sub>Q</sub>, C<sub>R</sub>, C<sub>g</sub>, and inductance L given target qubit/resonator frequencies, qubit charging energy, and coupling strength g. The qubit's E<sub>J</sub>/E<sub>C</sub> ratio is derived from f<sub>Q</sub> and E<sub>CQ</sub> rather than fixed, and L is constrained to a physically realizable on-chip range.</p>
+  <img src="qubit_resonator_coupling.svg" alt="Qubit–Resonator coupling">
+</div>
+
+<div class="layout">
+
+  <div>
+    <div class="panel">
+      <div class="panel-title">Parameters</div>
+
+      <div class="param-group">
+        <div class="param-label">
+          <span class="param-name">f<sub>Q</sub> target (GHz)</span>
+          <span class="param-val" id="grFQ-val">4.50</span>
+        </div>
+        <input type="range" id="grFQ" min="3" max="10" step="0.05" value="4.5">
+        <input type="number" class="number-input" id="grFQ-num" value="4.5" min="3" max="10" step="0.05">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">
+          <span class="param-name">f<sub>R</sub> target (GHz)</span>
+          <span class="param-val" id="grFR-val">5.75</span>
+        </div>
+        <input type="range" id="grFR" min="4" max="11" step="0.05" value="5.75">
+        <input type="number" class="number-input" id="grFR-num" value="5.75" min="4" max="11" step="0.05">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">
+          <span class="param-name">E<sub>CQ</sub> target (MHz)</span>
+          <span class="param-val" id="grECQ-val">200</span>
+        </div>
+        <input type="range" id="grECQ" min="100" max="300" step="1" value="200">
+        <input type="number" class="number-input" id="grECQ-num" value="200" min="100" max="300" step="1">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">
+          <span class="param-name">g target (MHz)</span>
+          <span class="param-val" id="grG-val">−50</span>
+        </div>
+        <input type="range" id="grG" min="-600" max="-1" step="5" value="-50">
+        <input type="number" class="number-input" id="grG-num" value="-50" min="-600" max="-1" step="5">
+      </div>
+
+      <div class="divider"></div>
+      <div class="iter-info" style="margin-top:-0.6rem; margin-bottom:0.8rem;">
+        L is bounded to [0.1, 5] nH (fabricated Xmon/resonator inductors). f<sub>R</sub> should exceed f<sub>Q</sub>.
+      </div>
+
+      <button class="solve-btn" onclick="solveGR()">SOLVE ↳</button>
+    </div>
+  </div>
+
+  <div class="results-panel" id="resultsGR">
+    <div class="result-section">
+      <div class="panel-title">Solution</div>
+      <div class="placeholder">Set parameters and press SOLVE</div>
+    </div>
+  </div>
+
+</div>
+
 <script>
 const e = 1.602176634e-19;
 const h = 6.626e-34;
+const hbar = 1.05457e-34;
+const fF = 1e-15;
+const nH = 1e-9;
+const L_MIN_NH = 0.1;
+const L_MAX_NH = 5.0;
 
 function syncSliderNum(sliderId, numId, displayId, fmt) {
   const sl = document.getElementById(sliderId);
@@ -428,6 +518,13 @@ syncSliderNum('rD','rD-num','rD-val', v => (+v).toFixed(0));
 syncSliderNum('wQ','wQ-num','wQ-val', v => (+v).toFixed(2));
 syncSliderNum('wD','wD-num','wD-val', v => (+v).toFixed(2));
 syncSliderNum('tJ','tJ-num','tJ-val', v => {
+  const n = +v; return (n >= 0 ? '' : '−') + Math.abs(n).toFixed(0);
+});
+
+syncSliderNum('grFQ','grFQ-num','grFQ-val', v => (+v).toFixed(2));
+syncSliderNum('grFR','grFR-num','grFR-val', v => (+v).toFixed(2));
+syncSliderNum('grECQ','grECQ-num','grECQ-val', v => (+v).toFixed(0));
+syncSliderNum('grG','grG-num','grG-val', v => {
   const n = +v; return (n >= 0 ? '' : '−') + Math.abs(n).toFixed(0);
 });
 
@@ -595,6 +692,373 @@ function solve() {
         <div class="metric-card">
           <div class="metric-label">E<sub>JQ</sub></div>
           <div class="metric-value">${(p.EJQ/h/1e9).toFixed(3)}</div>
+          <div class="metric-sub">GHz</div>
+        </div>
+      </div>
+    </div>`;
+  }, 20);
+}
+
+// ── Qubit–resonator (inductively shunted) solver ──────────────────────
+// Ported from capacitance_solver.py
+
+function CtotGR(CR, Cg, CQ) { return CR*CQ + CR*Cg + CQ*Cg; }
+
+function ECQ_GR(CR, Cg, CQ) {
+  return (e*e/2) * (CR + Cg) / CtotGR(CR, Cg, CQ);
+}
+function ECR_GR(CR, Cg, CQ) {
+  return (e*e/2) * (CQ + Cg) / CtotGR(CR, Cg, CQ);
+}
+function EL_GR(L) {
+  return hbar*hbar / (4*e*e*L);
+}
+function omegaQ_GR(ratioQ, CR, Cg, CQ) {
+  const ec = ECQ_GR(CR, Cg, CQ);
+  const val = 8 * ratioQ * ec*ec;
+  return val > 0 ? Math.sqrt(val) - ec : NaN;
+}
+function omegaR_GR(L, CR, Cg, CQ) {
+  const val = 8 * EL_GR(L) * ECR_GR(CR, Cg, CQ);
+  return val > 0 ? Math.sqrt(val) : NaN;
+}
+function g_GR(ratioQ, L, CR, Cg, CQ) {
+  const ec  = ECQ_GR(CR, Cg, CQ);
+  const ecr = ECR_GR(CR, Cg, CQ);
+  const el  = EL_GR(L);
+  const inside = (el / (32*ecr)) * (ratioQ * ec / (32*ec));
+  if (!(inside > 0)) return NaN;
+  const prefactor  = (-4*e*e) * (Cg / CtotGR(CR, Cg, CQ));
+  const wq = omegaQ_GR(ratioQ, CR, Cg, CQ);
+  const correction = 1 + (-ec) / (2 * wq);
+  return prefactor * Math.pow(inside, 0.25) * correction;
+}
+function getRatioGR(omegaQ_Hz, ECQ_Hz) {
+  return Math.pow(omegaQ_Hz + ECQ_Hz, 2) / (8 * ECQ_Hz*ECQ_Hz);
+}
+
+// scan [lo,hi] for a sign change, then bisect
+function solveRootGR(func, lo, hi, nscan) {
+  nscan = nscan || 300;
+  let prevX = lo, prevY = func(lo), bx0 = null, bx1 = null;
+  for (let i = 1; i < nscan; i++) {
+    const x = lo + (hi - lo) * i / (nscan - 1);
+    const y = func(x);
+    if (Number.isFinite(prevY) && Number.isFinite(y) && prevY !== 0 &&
+        Math.sign(prevY) !== Math.sign(y)) {
+      bx0 = prevX; bx1 = x;
+      break;
+    }
+    prevX = x; prevY = y;
+  }
+  if (bx0 === null) return null;
+  let lo2 = bx0, hi2 = bx1;
+  let flo = func(lo2);
+  for (let i = 0; i < 80; i++) {
+    const mid = (lo2 + hi2) / 2;
+    const fm = func(mid);
+    if (!Number.isFinite(fm)) return mid;
+    if (Math.sign(fm) === Math.sign(flo)) { lo2 = mid; flo = fm; }
+    else { hi2 = mid; }
+  }
+  return (lo2 + hi2) / 2;
+}
+
+// solve a 4x4 linear system J*x = b via Gaussian elimination w/ partial pivoting
+function solveLinear4(J, b) {
+  const n = 4;
+  const M = J.map((row, i) => row.concat([b[i]]));
+  for (let col = 0; col < n; col++) {
+    let piv = col;
+    for (let r = col+1; r < n; r++) {
+      if (Math.abs(M[r][col]) > Math.abs(M[piv][col])) piv = r;
+    }
+    if (Math.abs(M[piv][col]) < 1e-300) return null;
+    [M[col], M[piv]] = [M[piv], M[col]];
+    for (let r = 0; r < n; r++) {
+      if (r === col) continue;
+      const f = M[r][col] / M[col][col];
+      for (let c = col; c <= n; c++) M[r][c] -= f * M[col][c];
+    }
+  }
+  return M.map((row, i) => row[n] / row[i]);
+}
+
+function solveGR() {
+  const fQ_GHz  = +document.getElementById('grFQ').value;
+  const fR_GHz  = +document.getElementById('grFR').value;
+  const ECQ_MHz = +document.getElementById('grECQ').value;
+  const g_MHz   = +document.getElementById('grG').value;
+
+  const res = document.getElementById('resultsGR');
+  res.innerHTML = `<div class="result-section">
+    <div class="status-bar solving"><div class="dot blue"></div>Solving via coordinate descent + Newton polish…</div>
+  </div>`;
+
+  setTimeout(() => {
+    const targetOmegaQ_Hz = fQ_GHz  * 1e9;
+    const targetOmegaR_Hz = fR_GHz  * 1e9;
+    const targetECQ_Hz    = ECQ_MHz * 1e6;
+    const targetg_Hz      = g_MHz   * 1e6;
+
+    const targetOmegaQ = targetOmegaQ_Hz * h;
+    const targetOmegaR = targetOmegaR_Hz * h;
+    const targetECQ    = targetECQ_Hz    * h;
+    const targetg      = targetg_Hz      * h;
+
+    const ratioQ = getRatioGR(targetOmegaQ_Hz, targetECQ_Hz);
+
+    // ── initial guess (mirrors make_initial_guess in the .py solver) ──
+    let CQ0 = (e*e / (2 * targetECQ_Hz * h)) / fF;
+
+    const L_seed   = 0.5 * (L_MIN_NH + L_MAX_NH) * nH;
+    const EL_seed  = hbar*hbar / (4*e*e*L_seed);
+    const ECR_seed = Math.pow(targetOmegaR_Hz * h, 2) / (8*EL_seed);
+    let CR0 = (e*e / (2*ECR_seed)) / fF;
+
+    let Cg0 = Math.max(0.1, Math.abs(targetg_Hz) / targetOmegaQ_Hz * 10);
+
+    const ECR0 = (e*e/2) / (CR0*fF);
+    let L0 = (hbar*hbar / (4*e*e * (Math.pow(targetOmegaR_Hz*h, 2) / (8*ECR0)))) / nH;
+
+    CQ0 = Math.min(600, Math.max(10, CQ0));
+    CR0 = Math.min(3000, Math.max(30, CR0));
+    Cg0 = Math.min(30, Math.max(0.05, Cg0));
+    L0  = Math.min(L_MAX_NH, Math.max(L_MIN_NH, L0));
+
+    let CQ = CQ0*fF, CR = CR0*fF, Cg = Cg0*fF, L = L0*nH;
+
+    let bestRes = Infinity;
+    let bestState = [CQ, CR, Cg, L];
+    let converged = false;
+    let iters = 0;
+
+    for (let iter = 0; iter < 400; iter++) {
+      iters = iter + 1;
+
+      let r = solveRootGR(CRfF => ECQ_GR(CRfF*fF, Cg, CQ) - targetECQ, 5, 15000);
+      if (r !== null) CR = r*fF;
+
+      r = solveRootGR(CQfF => {
+        const v = omegaQ_GR(ratioQ, CR, Cg, CQfF*fF);
+        return Number.isFinite(v) ? v - targetOmegaQ : 1e30;
+      }, 5, 3000);
+      if (r !== null) CQ = r*fF;
+
+      r = solveRootGR(Lnh => {
+        const v = omegaR_GR(Lnh*nH, CR, Cg, CQ);
+        return Number.isFinite(v) ? v - targetOmegaR : 1e30;
+      }, L_MIN_NH, L_MAX_NH);
+      if (r !== null) {
+        L = r*nH;
+      } else {
+        const edgeLo = omegaR_GR(L_MIN_NH*nH, CR, Cg, CQ) - targetOmegaR;
+        const edgeHi = omegaR_GR(L_MAX_NH*nH, CR, Cg, CQ) - targetOmegaR;
+        L = (Math.abs(edgeLo) < Math.abs(edgeHi) ? L_MIN_NH : L_MAX_NH) * nH;
+      }
+
+      r = solveRootGR(CgfF => {
+        const v = g_GR(ratioQ, L, CR, CgfF*fF, CQ);
+        return Number.isFinite(v) ? v - targetg : 1e30;
+      }, 0.001, 500);
+      if (r !== null) Cg = r*fF;
+
+      const gv = g_GR(ratioQ, L, CR, Cg, CQ);
+      if (!Number.isFinite(gv)) continue;
+
+      const r1 = Math.abs(ECQ_GR(CR,Cg,CQ)           - targetECQ)    / Math.abs(targetECQ);
+      const r2 = Math.abs(omegaQ_GR(ratioQ,CR,Cg,CQ) - targetOmegaQ) / Math.abs(targetOmegaQ);
+      const r3 = Math.abs(omegaR_GR(L,CR,Cg,CQ)      - targetOmegaR) / Math.abs(targetOmegaR);
+      const r4 = Math.abs(gv                          - targetg)      / Math.abs(targetg);
+      const maxRes = Math.max(r1, r2, r3, r4);
+
+      if (maxRes < bestRes) { bestRes = maxRes; bestState = [CQ, CR, Cg, L]; }
+      if (maxRes < 1e-10) { converged = true; break; }
+    }
+
+    [CQ, CR, Cg, L] = bestState;
+
+    // ── Newton polish on scaled variables (numerical Jacobian) ──────
+    function residuals(x) {
+      const CQp = x[0]*fF, CRp = x[1]*fF, Cgp = x[2]*fF, Lp = x[3]*nH;
+      const gv = g_GR(ratioQ, Lp, CRp, Cgp, CQp);
+      if (!Number.isFinite(gv)) return null;
+      return [
+        (ECQ_GR(CRp,Cgp,CQp)           - targetECQ)    / Math.abs(targetECQ),
+        (omegaQ_GR(ratioQ,CRp,Cgp,CQp) - targetOmegaQ) / Math.abs(targetOmegaQ),
+        (omegaR_GR(Lp,CRp,Cgp,CQp)     - targetOmegaR) / Math.abs(targetOmegaR),
+        (gv                              - targetg)      / Math.abs(targetg),
+      ];
+    }
+
+    for (let p = 0; p < 200; p++) {
+      const x = [CQ/fF, CR/fF, Cg/fF, L/nH];
+      const f0 = residuals(x);
+      if (!f0) break;
+      const maxAbs = Math.max(...f0.map(Math.abs));
+      if (maxAbs < 1e-12) { converged = true; break; }
+
+      const Jm = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+      const eps = 1e-6;
+      let ok = true;
+      for (let k = 0; k < 4; k++) {
+        const xk = x.slice();
+        const step = xk[k]*eps || eps;
+        xk[k] += step;
+        const fk = residuals(xk);
+        if (!fk) { ok = false; break; }
+        for (let rIdx = 0; rIdx < 4; rIdx++) Jm[rIdx][k] = (fk[rIdx]-f0[rIdx]) / step;
+      }
+      if (!ok) break;
+
+      const dx = solveLinear4(Jm, f0.map(v => -v));
+      if (!dx) break;
+
+      let improved = false;
+      for (const scale of [1, 0.5, 0.25, 0.1, 0.05, 0.01]) {
+        const xNew = x.map((v,i) => v + dx[i]*scale);
+        xNew[0] = Math.max(1e-3, xNew[0]);
+        xNew[1] = Math.max(1e-3, xNew[1]);
+        xNew[2] = Math.max(1e-4, xNew[2]);
+        xNew[3] = Math.min(L_MAX_NH, Math.max(L_MIN_NH, xNew[3]));
+        const fNew = residuals(xNew);
+        if (fNew) {
+          const maxNew = Math.max(...fNew.map(Math.abs));
+          if (maxNew < maxAbs) {
+            CQ = xNew[0]*fF; CR = xNew[1]*fF; Cg = xNew[2]*fF; L = xNew[3]*nH;
+            improved = true;
+            break;
+          }
+        }
+      }
+      if (!improved) break;
+    }
+
+    const gv = g_GR(ratioQ, L, CR, Cg, CQ);
+    const ECQ_final = ECQ_GR(CR, Cg, CQ);
+    const ECR_final = ECR_GR(CR, Cg, CQ);
+    const EL_final  = EL_GR(L);
+    const wQ_final  = omegaQ_GR(ratioQ, CR, Cg, CQ);
+    const wR_final  = omegaR_GR(L, CR, Cg, CQ);
+
+    const fQ_GHz_out  = wQ_final / h / 1e9;
+    const fR_GHz_out  = wR_final / h / 1e9;
+    const ECQ_MHz_out = ECQ_final / h / 1e6;
+    const g_MHz_out   = Number.isFinite(gv) ? gv / h / 1e6 : NaN;
+
+    const errQ   = Math.abs((wQ_final   - targetOmegaQ) / targetOmegaQ * 100);
+    const errR   = Math.abs((wR_final   - targetOmegaR) / targetOmegaR * 100);
+    const errECQ = Math.abs((ECQ_final  - targetECQ)    / targetECQ    * 100);
+    const errG   = Number.isFinite(gv) ? Math.abs((gv - targetg) / targetg * 100) : NaN;
+
+    const maxErr = Math.max(errQ, errR, errECQ, Number.isFinite(errG) ? errG : 0);
+    converged = converged || maxErr < 0.01;
+
+    const LInRange = (L/nH >= L_MIN_NH - 1e-9) && (L/nH <= L_MAX_NH + 1e-9);
+
+    function cls(pctErr) { return pctErr < 0.01 ? 'ok' : pctErr < 1 ? 'warn' : 'error'; }
+    function dotcls(pctErr) { return pctErr < 0.01 ? 'green' : pctErr < 1 ? 'blue' : 'red'; }
+
+    const overallOk = converged && LInRange;
+    const statusClass = overallOk ? 'converged' : (converged ? 'failed' : 'failed');
+    const statusDot = overallOk ? 'green' : 'red';
+    let statusMsg;
+    if (!Number.isFinite(gv)) {
+      statusMsg = `Solver produced a non-physical state (g undefined) — try different targets`;
+    } else if (!LInRange) {
+      statusMsg = `Converged, but L is pinned at the physical bound — targets not simultaneously reachable in [0.1, 5] nH`;
+    } else if (converged) {
+      statusMsg = `Converged in ${iters} coordinate-descent iterations`;
+    } else {
+      statusMsg = `Did not fully converge after ${iters} iterations (max err ${maxErr.toFixed(3)}%) — try different targets`;
+    }
+
+    res.innerHTML = `
+    <div class="result-section">
+      <div class="status-bar ${statusClass}"><div class="dot ${statusDot}"></div>${statusMsg}</div>
+
+      <div class="panel-title" style="margin-top:1rem">Capacitances &amp; Inductance</div>
+      <div class="caps-grid-4">
+        <div class="cap-card">
+          <div class="cap-symbol">C<sub>Q</sub></div>
+          <div class="cap-val">${(CQ/fF).toFixed(3)}</div>
+          <div class="cap-unit">fF</div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-symbol">C<sub>R</sub></div>
+          <div class="cap-val">${(CR/fF).toFixed(3)}</div>
+          <div class="cap-unit">fF</div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-symbol">C<sub>g</sub></div>
+          <div class="cap-val">${(Cg/fF).toFixed(3)}</div>
+          <div class="cap-unit">fF</div>
+        </div>
+        <div class="cap-card" style="${LInRange ? '' : 'border-color: rgba(248,81,73,0.5);'}">
+          <div class="cap-symbol">L</div>
+          <div class="cap-val">${(L/nH).toFixed(4)}</div>
+          <div class="cap-unit">nH${LInRange ? '' : ' ⚠'}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-section">
+      <div class="panel-title">Verification</div>
+      <div class="verify-rows">
+        <div class="verify-row">
+          <span class="verify-lhs">f<sub>Q</sub></span>
+          <span>
+            <span class="verify-rhs">${fQ_GHz_out.toFixed(4)} GHz</span>
+            <span class="verify-delta verify-${cls(errQ)}">Δ = ${errQ.toFixed(4)}%</span>
+          </span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-lhs">f<sub>R</sub></span>
+          <span>
+            <span class="verify-rhs">${fR_GHz_out.toFixed(4)} GHz</span>
+            <span class="verify-delta verify-${cls(errR)}">Δ = ${errR.toFixed(4)}%</span>
+          </span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-lhs">E<sub>CQ</sub></span>
+          <span>
+            <span class="verify-rhs">${ECQ_MHz_out.toFixed(4)} MHz</span>
+            <span class="verify-delta verify-${cls(errECQ)}">Δ = ${errECQ.toFixed(4)}%</span>
+          </span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-lhs">g</span>
+          <span>
+            <span class="verify-rhs">${Number.isFinite(g_MHz_out) ? g_MHz_out.toFixed(4) : '—'} MHz</span>
+            <span class="verify-delta ${Number.isFinite(errG) ? 'verify-'+cls(errG) : ''}">${Number.isFinite(errG) ? `Δ = ${errG.toFixed(4)}%` : 'undefined'}</span>
+          </span>
+        </div>
+        <div class="verify-row">
+          <span class="verify-lhs">E<sub>JQ</sub>/E<sub>CQ</sub></span>
+          <span>
+            <span class="verify-rhs">${ratioQ.toFixed(4)}</span>
+            <span class="verify-delta">(derived from f<sub>Q</sub>, E<sub>CQ</sub>)</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-section">
+      <div class="panel-title">Charging &amp; inductive energies</div>
+      <div class="result-grid">
+        <div class="metric-card">
+          <div class="metric-label">E<sub>CQ</sub></div>
+          <div class="metric-value">${(ECQ_final/h/1e6).toFixed(2)}</div>
+          <div class="metric-sub">MHz</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">E<sub>CR</sub></div>
+          <div class="metric-value">${(ECR_final/h/1e6).toFixed(2)}</div>
+          <div class="metric-sub">MHz</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">E<sub>L</sub></div>
+          <div class="metric-value">${(EL_final/h/1e9).toFixed(3)}</div>
           <div class="metric-sub">GHz</div>
         </div>
       </div>
