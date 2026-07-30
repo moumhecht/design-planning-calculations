@@ -338,6 +338,7 @@
 <div class="header">
   <h1>Capacitance Solvers</h1>
   <p>Solves for C<sub>J</sub>, C<sub>Q</sub>, C<sub>D</sub> given target qubit/drive frequencies and coupling strength. Equations follow the dispersive transmon model.</p>
+<img src="qubit_dissipator_coupling.svg" alt="Two coupled transmons">
 </div>
 
 <div class="layout">
@@ -430,7 +431,7 @@ syncSliderNum('tJ','tJ-num','tJ-val', v => {
   const n = +v; return (n >= 0 ? '' : '−') + Math.abs(n).toFixed(0);
 });
 
-function physics(CJ, CQ, CD, rQ, rD) {
+function J_cap(CJ, CQ, CD, rQ, rD) {
   const denom = CD*CQ + CD*CJ + CQ*CJ;
   const ECQ = (e*e/2) * (CD + CJ) / denom;
   const ECD = (e*e/2) * (CQ + CJ) / denom;
@@ -461,14 +462,14 @@ function solve() {
 
     for (let iter = 0; iter < 2000; iter++) {
       iters++;
-      const p = physics(CJ, CQ, CD, rQ, rD);
+      const p = J_cap(CJ, CQ, CD, rQ, rD);
       const f1 = p.wQ - twQ, f2 = p.wD - twD, f3 = p.J - tJ;
       if (Math.abs(f1) < 1e-30 && Math.abs(f2) < 1e-30 && Math.abs(f3) < 1e-40) { converged = true; break; }
 
       const d = eps;
-      const p1 = physics(CJ+d, CQ, CD, rQ, rD);
-      const p2 = physics(CJ, CQ+d, CD, rQ, rD);
-      const p3 = physics(CJ, CQ, CD+d, rQ, rD);
+      const p1 = J_cap(CJ+d, CQ, CD, rQ, rD);
+      const p2 = J_cap(CJ, CQ+d, CD, rQ, rD);
+      const p3 = J_cap(CJ, CQ, CD+d, rQ, rD);
 
       const J11=(p1.wQ-p.wQ)/d, J12=(p2.wQ-p.wQ)/d, J13=(p3.wQ-p.wQ)/d;
       const J21=(p1.wD-p.wD)/d, J22=(p2.wD-p.wD)/d, J23=(p3.wD-p.wD)/d;
@@ -495,7 +496,7 @@ function solve() {
       if (norm < 1e-9) { converged = true; break; }
     }
 
-    const p = physics(CJ, CQ, CD, rQ, rD);
+    const p = J_cap(CJ, CQ, CD, rQ, rD);
     const wQ_GHz = p.wQ / h / 1e9;
     const wD_GHz = p.wD / h / 1e9;
     const J_MHz  = p.J  / h / 1e6;
