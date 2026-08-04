@@ -1,0 +1,129 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 14.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      3811,        119]
+NotebookOptionsPosition[      3309,        102]
+NotebookOutlinePosition[      3732,        118]
+CellTagsIndexPosition[      3689,        115]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"ClearAll", "[", "\"\<Global`*\>\"", "]"}], "\[IndentingNewLine]", 
+  "\[IndentingNewLine]", 
+  RowBox[{"(*", "Inputs", "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"fGHz", "=", "9.5"}], ";"}], "       ", 
+  RowBox[{"(*", 
+   RowBox[{"resonator", " ", "frequency"}], "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"kappaKHz", "=", 
+    RowBox[{"10", "*", 
+     RowBox[{"10", "^", "3"}]}]}], ";"}], "    ", 
+  RowBox[{"(*", 
+   RowBox[{"desired", " ", "linewidth"}], "*)"}], "\n"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Z0", "=", "50"}], ";"}], "           ", 
+  RowBox[{"(*", 
+   RowBox[{"feedline", " ", "impedance"}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"m", " ", "=", " ", "2"}], ";"}], "\n", 
+  RowBox[{"(*", 
+   RowBox[{"Unit", " ", "conversions"}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"fr", "=", 
+   RowBox[{"fGHz", "*", 
+    RowBox[{"10", "^", "9"}]}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"\[Omega]r", "=", 
+   RowBox[{"2", "*", "Pi", "*", "fr"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"\[Kappa]", "=", 
+    RowBox[{"2", "*", "Pi", "*", "kappaKHz", "*", 
+     RowBox[{"10", "^", "3"}]}]}], ";"}], "\[IndentingNewLine]", 
+  "\[IndentingNewLine]", "\n", 
+  RowBox[{"(*", 
+   RowBox[{"Required", " ", "coupling", " ", "capacitance"}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Cc", "=", 
+    RowBox[{"Sqrt", "[", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"Pi", "*", "\[Kappa]"}], ")"}], "/", 
+      RowBox[{"(", 
+       RowBox[{"m", "*", 
+        RowBox[{"\[Omega]r", "^", "3"}], "*", 
+        RowBox[{"Z0", "^", "2"}]}], ")"}]}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]"}], "\n", 
+ RowBox[{
+  RowBox[{"Print", "[", 
+   RowBox[{"\"\<Required coupling capacitance = \>\"", ",", 
+    RowBox[{"Cc", "*", 
+     RowBox[{"10", "^", "15"}]}], ",", "\"\< fF\>\""}], "]"}], 
+  ";"}]}], "Input",
+ CellChangeTimes->{{3.990032967095108*^9, 3.9900330027301235`*^9}, {
+   3.9900337832860584`*^9, 3.990033858431299*^9}, 3.990033918804983*^9, 
+   3.9900339501158237`*^9},
+ CellLabel->
+  "In[829]:=",ExpressionUUID->"4c4f0917-e002-9a47-8c30-ea95f4ef03bd"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Required coupling capacitance = \"\>", "\[InvisibleSpace]", 
+   "13.624628142287909`", "\[InvisibleSpace]", "\<\" fF\"\>"}],
+  SequenceForm["Required coupling capacitance = ", 13.624628142287909`, " fF"],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.9900329722541428`*^9, 3.9900330075301304`*^9, 
+  3.990033861208124*^9, 3.9900339540120506`*^9},
+ CellLabel->
+  "During evaluation of \
+In[829]:=",ExpressionUUID->"1021995f-1271-1343-b6dc-4837275cb65a"]
+}, Open  ]]
+},
+WindowSize->{574.8, 573.6},
+WindowMargins->{{Automatic, -4.7999999999999545`}, {Automatic, 0}},
+FrontEndVersion->"14.0 for Microsoft Windows (64-bit) (December 12, 2023)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"8b6cbcfc-904b-8743-b199-0a726b6f4a79"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 2204, 65, 371, "Input",ExpressionUUID->"4c4f0917-e002-9a47-8c30-ea95f4ef03bd"],
+Cell[2787, 89, 506, 10, 22, "Print",ExpressionUUID->"1021995f-1271-1343-b6dc-4837275cb65a"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+

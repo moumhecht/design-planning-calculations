@@ -1,0 +1,1601 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 14.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     76327,       1593]
+NotebookOptionsPosition[     28391,        717]
+NotebookOutlinePosition[     74845,       1574]
+CellTagsIndexPosition[     74802,       1571]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Clear", "[", "\"\<Global`*\>\"", "]"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"Physical", " ", "constants"}], "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{"e", "=", "1.602176634*^-19"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"h", "=", "6.626*^-34"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"hbar", "=", "1.05457*^-34"}], ";"}], "\n", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"Capacitance", " ", "matrix", " ", "energies"}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"ECD", "[", 
+   RowBox[{"CF_", ",", "Cg_", ",", "CD_"}], "]"}], ":=", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"e", "^", "2"}], "/", "2"}], ")"}], "*", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"CF", "+", "Cg"}], ")"}], "/", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"CD", "*", "CF"}], "+", 
+      RowBox[{"CF", "*", "Cg"}], "+", 
+      RowBox[{"CD", "*", "Cg"}]}], ")"}]}]}]}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"ECF", "[", 
+    RowBox[{"CF_", ",", "Cg_", ",", "CD_"}], "]"}], ":=", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"e", "^", "2"}], "/", "2"}], ")"}], "*", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"CD", "+", "Cg"}], ")"}], "/", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"CD", "*", "CF"}], "+", 
+       RowBox[{"CF", "*", "Cg"}], "+", 
+       RowBox[{"CD", "*", "Cg"}]}], ")"}]}]}]}], "\n", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"Inductive", " ", "energy"}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"EL", "[", "L_", "]"}], ":=", 
+   RowBox[{
+    RowBox[{"hbar", "^", "2"}], "/", 
+    RowBox[{"(", 
+     RowBox[{"4", "*", 
+      RowBox[{"e", "^", "2"}], "*", "L"}], ")"}]}]}], "\n", 
+  "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"EJ", " ", "from", " ", "ratio"}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"ratioD", "=", "80"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"EJD", "[", 
+    RowBox[{"CF_", ",", "Cg_", ",", "CD_"}], "]"}], ":=", 
+   RowBox[{"ratioD", "*", 
+    RowBox[{"ECD", "[", 
+     RowBox[{"CF", ",", "Cg", ",", "CD"}], "]"}]}]}], "\n", 
+  "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"Frequencies", " ", "and", " ", "coupling"}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"omegaD", "[", 
+   RowBox[{"CF_", ",", "Cg_", ",", "CD_"}], "]"}], ":=", 
+  RowBox[{
+   RowBox[{"Sqrt", "[", 
+    RowBox[{"8", "*", 
+     RowBox[{"EJD", "[", 
+      RowBox[{"CF", ",", "Cg", ",", "CD"}], "]"}], "*", 
+     RowBox[{"ECD", "[", 
+      RowBox[{"CF", ",", "Cg", ",", "CD"}], "]"}]}], "]"}], "-", 
+   RowBox[{"ECD", "[", 
+    RowBox[{"CF", ",", "Cg", ",", "CD"}], "]"}]}]}], "\n", 
+ RowBox[{
+  RowBox[{"omegaF", "[", 
+   RowBox[{"L_", ",", "CF_", ",", "Cg_", ",", "CD_"}], "]"}], ":=", 
+  RowBox[{"Sqrt", "[", 
+   RowBox[{"8", "*", 
+    RowBox[{"EL", "[", "L", "]"}], "*", 
+    RowBox[{"ECF", "[", 
+     RowBox[{"CF", ",", "Cg", ",", "CD"}], "]"}]}], "]"}]}], "\n", 
+ RowBox[{
+  RowBox[{"etaD", "[", 
+   RowBox[{"CF_", ",", "Cg_", ",", "CD_"}], "]"}], ":=", 
+  RowBox[{"-", 
+   RowBox[{"ECD", "[", 
+    RowBox[{"CF", ",", "Cg", ",", "CD"}], "]"}]}]}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"g", "[", 
+    RowBox[{"L_", ",", "CF_", ",", "Cg_", ",", "CD_"}], "]"}], ":=", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "4"}], "*", 
+      RowBox[{"e", "^", "2"}]}], ")"}], "*", 
+    RowBox[{"(", 
+     RowBox[{"Cg", "/", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"CF", "*", "CD"}], "+", 
+        RowBox[{"CF", "*", "Cg"}], "+", 
+        RowBox[{"CD", "*", "Cg"}]}], ")"}]}], ")"}], "*", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"EL", "[", "L", "]"}], "/", 
+        RowBox[{"(", 
+         RowBox[{"32", "*", 
+          RowBox[{"ECF", "[", 
+           RowBox[{"CF", ",", "Cg", ",", "CD"}], "]"}]}], ")"}]}], "*", 
+       RowBox[{
+        RowBox[{"EJD", "[", 
+         RowBox[{"CF", ",", "Cg", ",", "CD"}], "]"}], "/", 
+        RowBox[{"(", 
+         RowBox[{"32", "*", 
+          RowBox[{"ECD", "[", 
+           RowBox[{"CF", ",", "Cg", ",", "CD"}], "]"}]}], ")"}]}]}], ")"}], 
+     "^", 
+     RowBox[{"(", 
+      RowBox[{"1", "/", "4"}], ")"}]}], "*", 
+    RowBox[{"(", 
+     RowBox[{"1", "+", 
+      RowBox[{
+       RowBox[{"etaD", "[", 
+        RowBox[{"CF", ",", "Cg", ",", "CD"}], "]"}], "/", 
+       RowBox[{"(", 
+        RowBox[{"2", "*", 
+         RowBox[{"omegaD", "[", 
+          RowBox[{"CF", ",", "Cg", ",", "CD"}], "]"}]}], ")"}]}]}], ")"}]}]}],
+   "\n", "\[IndentingNewLine]", 
+  RowBox[{"(*", "Targets", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"targetOmegaD", "=", 
+   RowBox[{"7*^9", "*", "h"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"targetOmegaF", "=", 
+   RowBox[{"9.5*^9", "*", "h"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"targetg", "=", 
+   RowBox[{
+    RowBox[{"-", "45*^6"}], "*", "h"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"targetECD", "=", 
+    RowBox[{"288*^6", "*", "h"}]}], ";"}], "\[IndentingNewLine]", "\n", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"--", 
+      RowBox[{"-", "Analytical"}]}], " ", "pre"}], "-", 
+    RowBox[{"estimates", " ", "for", " ", "initial", " ", 
+     RowBox[{"guess", "--"}]}], "-"}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"CD", " ", 
+    RowBox[{"alone", ":", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"e", "^", "2"}], "/", 
+       RowBox[{"(", 
+        RowBox[{"2", "*", "ECD"}], ")"}]}], " ", "ignoring", " ", "cross", 
+      " ", "terms"}]}]}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"CD0", "=", 
+   RowBox[{
+    RowBox[{"e", "^", "2"}], "/", 
+    RowBox[{"(", 
+     RowBox[{"2", "*", "targetECD"}], ")"}]}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Print", "[", 
+   RowBox[{"\"\<CD estimate = \>\"", ",", 
+    RowBox[{"CD0", "/", 
+     RowBox[{"10", "^", 
+      RowBox[{"-", "15"}]}]}], ",", "\"\< fF\>\""}], "]"}], 
+  "\[IndentingNewLine]", "\n", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"For", " ", "omegaF", " ", 
+      RowBox[{"target", ":", "ECF"}]}], "=", 
+     RowBox[{
+      RowBox[{"omegaF", "^", "2"}], "/", 
+      RowBox[{"(", 
+       RowBox[{"8", "*", "EL"}], ")"}]}]}], ",", 
+    RowBox[{"need", " ", "L", " ", "first"}]}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"Use", " ", 
+     RowBox[{"L", "~", "2"}], "nH", " ", "as", " ", "seed"}], ",", 
+    RowBox[{"then", " ", 
+     RowBox[{
+      RowBox[{"ECF", "~", "omegaF"}], "^", "2"}], "*", 
+     RowBox[{
+      RowBox[{"h", "^", "2"}], "/", 
+      RowBox[{"(", 
+       RowBox[{"8", "*", "EL"}], ")"}]}]}]}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"ECF", "~", "e"}], "^", "2"}], "/", 
+     RowBox[{"(", 
+      RowBox[{"2", "*", "CF"}], ")"}]}], " ", "so", " ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"CF", "~", "e"}], "^", "2"}], "/", 
+     RowBox[{"(", 
+      RowBox[{"2", "*", "ECF"}], ")"}]}]}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"With", " ", "L"}], "=", 
+    RowBox[{
+     RowBox[{"1", 
+      RowBox[{"nH", ":", "EL"}]}], "=", 
+     RowBox[{
+      RowBox[{"hbar", "^", "2"}], "/", 
+      RowBox[{"(", 
+       RowBox[{"4", 
+        RowBox[{"e", "^", "2"}], "*", "L"}], ")"}]}]}]}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"L0", "=", "1*^-9"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"ELval", "=", 
+   RowBox[{
+    RowBox[{"hbar", "^", "2"}], "/", 
+    RowBox[{"(", 
+     RowBox[{"4", "*", 
+      RowBox[{"e", "^", "2"}], "*", "L0"}], ")"}]}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"ECF0", "=", 
+   RowBox[{
+    RowBox[{"targetOmegaF", "^", "2"}], "/", 
+    RowBox[{"(", 
+     RowBox[{"8", "*", "ELval"}], ")"}]}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"CF0", "=", 
+   RowBox[{
+    RowBox[{"e", "^", "2"}], "/", 
+    RowBox[{"(", 
+     RowBox[{"2", "*", "ECF0"}], ")"}]}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Print", "[", 
+   RowBox[{"\"\<CF estimate (L=1nH) = \>\"", ",", 
+    RowBox[{"CF0", "/", 
+     RowBox[{"10", "^", 
+      RowBox[{"-", "15"}]}]}], ",", "\"\< fF\>\""}], "]"}], 
+  "\[IndentingNewLine]", "\n", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+    "Cg", " ", "must", " ", "be", " ", "small", " ", "to", " ", "give", " ", 
+     RowBox[{"g", "~", 
+      RowBox[{"-", "25"}]}], " ", "MHz"}], ",", 
+    RowBox[{"start", " ", "at", " ", "1", " ", "fF"}]}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Cg0", "=", 
+   RowBox[{"-", "1.5*^-15"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Print", "[", 
+   RowBox[{"\"\<Cg estimate = \>\"", ",", 
+    RowBox[{"Cg0", "/", 
+     RowBox[{"10", "^", 
+      RowBox[{"-", "15"}]}]}], ",", "\"\< fF\>\""}], "]"}], 
+  "\[IndentingNewLine]", "\n", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"--", 
+      RowBox[{"-", "FindRoot"}]}], " ", "with", " ", "corrected", " ", 
+     "initial", " ", 
+     RowBox[{"guess", "--"}]}], "-"}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"sol", "=", 
+   RowBox[{"FindRoot", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"ECD", "[", 
+         RowBox[{"CF", ",", "Cg", ",", "CD"}], "]"}], "==", "targetECD"}], 
+       ",", 
+       RowBox[{
+        RowBox[{"omegaD", "[", 
+         RowBox[{"CF", ",", "Cg", ",", "CD"}], "]"}], "==", "targetOmegaD"}], 
+       ",", 
+       RowBox[{
+        RowBox[{"omegaF", "[", 
+         RowBox[{"L", ",", "CF", ",", "Cg", ",", "CD"}], "]"}], "==", 
+        "targetOmegaF"}], ",", 
+       RowBox[{
+        RowBox[{"g", "[", 
+         RowBox[{"L", ",", "CF", ",", "Cg", ",", "CD"}], "]"}], "==", 
+        "targetg"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"CD", ",", "CD0"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"CF", ",", "CF0"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"Cg", ",", "Cg0"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"L", ",", "L0"}], "}"}]}], "}"}], ",", 
+     RowBox[{"MaxIterations", "->", "500"}], ",", 
+     RowBox[{"AccuracyGoal", "->", "10"}], ",", 
+     RowBox[{"WorkingPrecision", "->", "10"}]}], "]"}]}], 
+  "\n"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"CDsol", "=", 
+   RowBox[{"CD", "/.", " ", "sol"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"CFsol", "=", 
+   RowBox[{"CF", "/.", " ", "sol"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Cgsol", "=", 
+   RowBox[{"Cg", "/.", " ", "sol"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Lsol", "=", 
+    RowBox[{"L", "/.", " ", "sol"}]}], ";"}], "\n"}], "\[IndentingNewLine]", 
+ RowBox[{"Print", "[", "\"\<\\n--- Solution ---\>\"", "]"}], "\n", 
+ RowBox[{"Print", "[", 
+  RowBox[{"\"\<CD = \>\"", ",", 
+   RowBox[{"CDsol", "/", 
+    RowBox[{"10", "^", 
+     RowBox[{"-", "15"}]}]}], ",", "\"\< fF\>\""}], "]"}], "\n", 
+ RowBox[{"Print", "[", 
+  RowBox[{"\"\<CF = \>\"", ",", 
+   RowBox[{"CFsol", "/", 
+    RowBox[{"10", "^", 
+     RowBox[{"-", "15"}]}]}], ",", "\"\< fF\>\""}], "]"}], "\n", 
+ RowBox[{"Print", "[", 
+  RowBox[{"\"\<Cg = \>\"", ",", 
+   RowBox[{"Cgsol", "/", 
+    RowBox[{"10", "^", 
+     RowBox[{"-", "15"}]}]}], ",", "\"\< fF\>\""}], "]"}], "\n", 
+ RowBox[{
+  RowBox[{"Print", "[", 
+   RowBox[{"\"\<L  = \>\"", ",", 
+    RowBox[{"Lsol", "/", 
+     RowBox[{"10", "^", 
+      RowBox[{"-", "9"}]}]}], ",", "\"\< nH\>\""}], "]"}], 
+  "\n"}], "\[IndentingNewLine]", 
+ RowBox[{"Print", "[", "\"\<\\n--- Verification ---\>\"", "]"}], "\n", 
+ RowBox[{"Print", "[", 
+  RowBox[{"\"\<ECD    = \>\"", ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"ECD", "[", 
+      RowBox[{"CFsol", ",", "Cgsol", ",", "CDsol"}], "]"}], "/", "h"}], "/", 
+    RowBox[{"10", "^", "6"}]}], ",", "\"\< MHz (target: 288)\>\""}], 
+  "]"}], "\n", 
+ RowBox[{"Print", "[", 
+  RowBox[{"\"\<omegaD = \>\"", ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"omegaD", "[", 
+      RowBox[{"CFsol", ",", "Cgsol", ",", "CDsol"}], "]"}], "/", "h"}], "/", 
+    RowBox[{"10", "^", "9"}]}], ",", "\"\< GHz (target: 7)\>\""}], 
+  "]"}], "\n", 
+ RowBox[{"Print", "[", 
+  RowBox[{"\"\<omegaF = \>\"", ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"omegaF", "[", 
+      RowBox[{"Lsol", ",", "CFsol", ",", "Cgsol", ",", "CDsol"}], "]"}], "/", 
+     "h"}], "/", 
+    RowBox[{"10", "^", "9"}]}], ",", "\"\< GHz (target: 9.5)\>\""}], 
+  "]"}], "\n", 
+ RowBox[{"Print", "[", 
+  RowBox[{"\"\<g      = \>\"", ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"g", "[", 
+      RowBox[{"Lsol", ",", "CFsol", ",", "Cgsol", ",", "CDsol"}], "]"}], "/", 
+     "h"}], "/", 
+    RowBox[{"10", "^", "6"}]}], ",", "\"\< MHz (target: 55)\>\""}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.99002339616078*^9, 3.990023396162163*^9}, {
+  3.9900235426197453`*^9, 3.990023543226631*^9}, {3.990023586895939*^9, 
+  3.990023610993498*^9}, {3.9900284186394234`*^9, 3.990028419273508*^9}, {
+  3.990102451978314*^9, 3.990102452203804*^9}, {3.9901025965436683`*^9, 
+  3.9901026131457*^9}, {3.990102651294084*^9, 3.990102695263796*^9}, {
+  3.9902891609174805`*^9, 3.9902891610543976`*^9}, {3.9902891956790695`*^9, 
+  3.990289195841503*^9}, {3.990292146103241*^9, 3.9902921464449253`*^9}},
+ CellLabel->
+  "In[513]:=",ExpressionUUID->"85337cca-bc39-3349-92dd-97fe2c28d8d3"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"CD estimate = \"\>", "\[InvisibleSpace]", "67.25845277378387`",
+    "\[InvisibleSpace]", "\<\" fF\"\>"}],
+  SequenceForm["CD estimate = ", 67.25845277378387, " fF"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023398866415*^9, 3.990023549042973*^9, 3.990023612864784*^9, {
+   3.990028423310579*^9, 3.990028425603426*^9}, {3.9901024284056034`*^9, 
+   3.990102432176344*^9}, 3.990102469187336*^9, {3.990102600946298*^9, 
+   3.990102617245268*^9}, 3.9901027062407207`*^9, 3.990289165971363*^9, {
+   3.9902891998466377`*^9, 3.990289202615898*^9}, 3.990292149350128*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"a72aaeab-2124-6b48-ba20-3a1f2173221d"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"CF estimate (L=1nH) = \"\>", "\[InvisibleSpace]", 
+   "280.6730741442354`", "\[InvisibleSpace]", "\<\" fF\"\>"}],
+  SequenceForm["CF estimate (L=1nH) = ", 280.6730741442354, " fF"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023398866415*^9, 3.990023549042973*^9, 3.990023612864784*^9, {
+   3.990028423310579*^9, 3.990028425603426*^9}, {3.9901024284056034`*^9, 
+   3.990102432176344*^9}, 3.990102469187336*^9, {3.990102600946298*^9, 
+   3.990102617245268*^9}, 3.9901027062407207`*^9, 3.990289165971363*^9, {
+   3.9902891998466377`*^9, 3.990289202615898*^9}, 3.9902921493616695`*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"6693a163-28ca-0544-9cf2-eeeabdc66323"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Cg estimate = \"\>", "\[InvisibleSpace]", 
+   RowBox[{"-", "1.5`"}], "\[InvisibleSpace]", "\<\" fF\"\>"}],
+  SequenceForm["Cg estimate = ", -1.5, " fF"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023398866415*^9, 3.990023549042973*^9, 3.990023612864784*^9, {
+   3.990028423310579*^9, 3.990028425603426*^9}, {3.9901024284056034`*^9, 
+   3.990102432176344*^9}, 3.990102469187336*^9, {3.990102600946298*^9, 
+   3.990102617245268*^9}, 3.9901027062407207`*^9, 3.990289165971363*^9, {
+   3.9902891998466377`*^9, 3.990289202615898*^9}, 3.990292149365999*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"0a832b1e-55de-a34f-b6ff-b15bcc0c9714"]
+}, Open  ]],
+
+Cell[BoxData[
+ TemplateBox[{
+  "FindRoot", "precw", 
+   "\"The precision of the argument function (\\!\\(\\*RowBox[{\\\"{\\\", \
+RowBox[{RowBox[{FractionBox[RowBox[{\\\"1.2834849832677847`*^-38\\\", \\\" \\\
+\", RowBox[{\\\"(\\\", RowBox[{\\\"CF\\\", \\\"+\\\", \\\"Cg\\\"}], \
+\\\")\\\"}]}], RowBox[{RowBox[{\\\"CD\\\", \\\" \\\", \\\"CF\\\"}], \
+\\\"+\\\", RowBox[{\\\"CD\\\", \\\" \\\", \\\"Cg\\\"}], \\\"+\\\", RowBox[{\\\
+\"CF\\\", \\\" \\\", \\\"Cg\\\"}]}]], \\\"\[Equal]\\\", \
+\\\"1.908288`*^-25\\\"}], \\\",\\\", \
+RowBox[{RowBox[{RowBox[{\\\"3.246988711799441`*^-37\\\", \\\" \\\", \
+SqrtBox[FractionBox[SuperscriptBox[RowBox[{\\\"Plus\\\", \\\"[\\\", \
+RowBox[{\\\"\[LeftSkeleton]\\\", \\\"2\\\", \\\"\[RightSkeleton]\\\"}], \\\"]\
+\\\"}], \\\"2\\\"], SuperscriptBox[RowBox[{\\\"Plus\\\", \\\"[\\\", \
+RowBox[{\\\"\[LeftSkeleton]\\\", \\\"3\\\", \\\"\[RightSkeleton]\\\"}], \\\"]\
+\\\"}], \\\"2\\\"]]]}], \\\"-\\\", \
+FractionBox[RowBox[{\\\"1.2834849832677847`*^-38\\\", \\\" \\\", \
+RowBox[{\\\"(\\\", RowBox[{\\\"CF\\\", \\\"+\\\", \\\"Cg\\\"}], \
+\\\")\\\"}]}], RowBox[{RowBox[{\\\"CD\\\", \\\" \\\", \\\"CF\\\"}], \
+\\\"+\\\", RowBox[{\\\"CD\\\", \\\" \\\", \\\"Cg\\\"}], \\\"+\\\", RowBox[{\\\
+\"CF\\\", \\\" \\\", \\\"Cg\\\"}]}]]}], \\\"\[Equal]\\\", \
+\\\"4.6382`*^-24\\\"}], \\\",\\\", RowBox[{RowBox[{\\\"1.05457`*^-34\\\", \
+\\\" \\\", SqrtBox[FractionBox[RowBox[{\\\"CD\\\", \\\"+\\\", \\\"Cg\\\"}], \
+RowBox[{RowBox[{\\\"(\\\", RowBox[{RowBox[{\\\"Times\\\", \\\"[\\\", RowBox[{\
+\\\"\[LeftSkeleton]\\\", \\\"2\\\", \\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \
+\\\"+\\\", RowBox[{\\\"Times\\\", \\\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \
+\\\"2\\\", \\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", \
+RowBox[{\\\"Times\\\", \\\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"2\\\", \
+\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}]}], \\\")\\\"}], \\\" \\\", \
+\\\"L\\\"}]]]}], \\\"\[Equal]\\\", \\\"6.2947`*^-24\\\"}], \\\",\\\", \
+RowBox[{RowBox[{\\\"-\\\", \
+FractionBox[RowBox[{\\\"2.925823339592779`*^-36\\\", \\\" \\\", \\\"Cg\\\", \
+\\\" \\\", RowBox[{\\\"(\\\", RowBox[{\\\"1\\\", \\\"-\\\", \
+FractionBox[RowBox[{\\\"6.417424916338923`*^-39\\\", \\\" \\\", RowBox[{\\\"(\
+\\\", RowBox[{\\\"CF\\\", \\\"+\\\", \\\"Cg\\\"}], \\\")\\\"}]}], \
+RowBox[{RowBox[{\\\"(\\\", RowBox[{RowBox[{\\\"Times\\\", \\\"[\\\", RowBox[{\
+\\\"\[LeftSkeleton]\\\", \\\"2\\\", \\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \
+\\\"+\\\", RowBox[{\\\"Times\\\", \\\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \
+\\\"2\\\", \\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", \
+RowBox[{\\\"Times\\\", \\\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"2\\\", \
+\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}]}], \\\")\\\"}], \\\" \\\", RowBox[{\\\
+\"(\\\", RowBox[{RowBox[{\\\"Times\\\", \\\"[\\\", \
+RowBox[{\\\"\[LeftSkeleton]\\\", \\\"2\\\", \\\"\[RightSkeleton]\\\"}], \\\"]\
+\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\"[\\\", RowBox[{\\\"\
+\[LeftSkeleton]\\\", \\\"3\\\", \\\"\[RightSkeleton]\\\"}], \\\"]\\\"}]}], \\\
+\")\\\"}]}]]}], \\\")\\\"}], \\\" \\\", SuperscriptBox[RowBox[{\\\"(\\\", \
+FractionBox[RowBox[{RowBox[{\\\"CD\\\", \\\" \\\", \\\"CF\\\"}], \\\"+\\\", \
+RowBox[{\\\"CD\\\", \\\" \\\", \\\"Cg\\\"}], \\\"+\\\", RowBox[{\\\"CF\\\", \
+\\\" \\\", \\\"Cg\\\"}]}], RowBox[{RowBox[{\\\"(\\\", RowBox[{\\\"CD\\\", \
+\\\"+\\\", \\\"Cg\\\"}], \\\")\\\"}], \\\" \\\", \\\"L\\\"}]], \\\")\\\"}], \
+RowBox[{\\\"1\\\", \\\"/\\\", \\\"4\\\"}]]}], RowBox[{RowBox[{\\\"CD\\\", \
+\\\" \\\", \\\"CF\\\"}], \\\"+\\\", RowBox[{\\\"CD\\\", \\\" \\\", \
+\\\"Cg\\\"}], \\\"+\\\", RowBox[{\\\"CF\\\", \\\" \\\", \\\"Cg\\\"}]}]]}], \\\
+\"\[Equal]\\\", RowBox[{\\\"-\\\", \\\"2.9816999999999997`*^-26\\\"}]}]}], \\\
+\"}\\\"}]\\)) is less than WorkingPrecision \
+(\\!\\(\\*RowBox[{\\\"10.`\\\"}]\\)).\"", 2, 539, 210, 24091619547771792615, 
+   "Local"},
+  "MessageTemplate"]], "Message", "MSG",
+ CellChangeTimes->{
+  3.990023398880188*^9, 3.99002354905847*^9, 3.990023612883705*^9, {
+   3.9900284233194876`*^9, 3.990028425619892*^9}, {3.990102428413328*^9, 
+   3.9901024321868052`*^9}, 3.990102469197855*^9, {3.990102600987852*^9, 
+   3.9901026172603016`*^9}, 3.990102706256094*^9, 3.990289165979841*^9, {
+   3.9902891998701878`*^9, 3.9902892026340294`*^9}, 3.990292149368332*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"77d1f801-87a9-3e47-bbb4-7f1af1d2e676"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"CD", "\[Rule]", "6.574267776236713985029024`10.*^-14"}], ",", 
+   RowBox[{"CF", "\[Rule]", "2.7912717584264878071762616`10.*^-13"}], ",", 
+   RowBox[{"Cg", "\[Rule]", "1.43899691306027709510543`10.*^-15"}], ",", 
+   RowBox[{"L", "\[Rule]", "1.00000000000000006228159145778`10.*^-9"}]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{
+  3.990023398913471*^9, 3.9900235490772266`*^9, 3.990023612895525*^9, {
+   3.9900284233327646`*^9, 3.990028425703125*^9}, {3.990102428428186*^9, 
+   3.9901024321914425`*^9}, 3.990102469210281*^9, {3.990102601076496*^9, 
+   3.9901026172760715`*^9}, 3.990102706272297*^9, 3.9902891660023117`*^9, {
+   3.990289199878126*^9, 3.9902892026433296`*^9}, 3.9902921493894234`*^9},
+ CellLabel->
+  "Out[539]=",ExpressionUUID->"6e1bb519-9f23-eb47-9024-b9fd884b1578"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"\\n--- Solution ---\"\>"], "Print",
+ CellChangeTimes->{
+  3.990023398866415*^9, 3.990023549042973*^9, 3.990023612864784*^9, {
+   3.990028423310579*^9, 3.990028425603426*^9}, {3.9901024284056034`*^9, 
+   3.990102432176344*^9}, 3.990102469187336*^9, {3.990102600946298*^9, 
+   3.990102617245268*^9}, 3.9901027062407207`*^9, 3.990289165971363*^9, {
+   3.9902891998466377`*^9, 3.990289202615898*^9}, 3.9902921493919334`*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"c7c0e798-3412-224a-a5b4-a7c53638569e"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"CD = \"\>", "\[InvisibleSpace]", "65.7426777623671398503`10.", 
+   "\[InvisibleSpace]", "\<\" fF\"\>"}],
+  SequenceForm["CD = ", 65.7426777623671398503`10., " fF"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023398866415*^9, 3.990023549042973*^9, 3.990023612864784*^9, {
+   3.990028423310579*^9, 3.990028425603426*^9}, {3.9901024284056034`*^9, 
+   3.990102432176344*^9}, 3.990102469187336*^9, {3.990102600946298*^9, 
+   3.990102617245268*^9}, 3.9901027062407207`*^9, 3.990289165971363*^9, {
+   3.9902891998466377`*^9, 3.990289202615898*^9}, 3.990292149394207*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"7a961e2b-716d-0c41-b35b-cb1132d7df01"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"CF = \"\>", "\[InvisibleSpace]", "279.1271758426487807176`10.",
+    "\[InvisibleSpace]", "\<\" fF\"\>"}],
+  SequenceForm["CF = ", 279.1271758426487807176`10., " fF"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023398866415*^9, 3.990023549042973*^9, 3.990023612864784*^9, {
+   3.990028423310579*^9, 3.990028425603426*^9}, {3.9901024284056034`*^9, 
+   3.990102432176344*^9}, 3.990102469187336*^9, {3.990102600946298*^9, 
+   3.990102617245268*^9}, 3.9901027062407207`*^9, 3.990289165971363*^9, {
+   3.9902891998466377`*^9, 3.990289202615898*^9}, 3.9902921493995647`*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"6f629c11-af82-7347-9c02-c9f02415befb"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Cg = \"\>", "\[InvisibleSpace]", 
+   "1.4389969130602770951054253454752121057`10.", 
+   "\[InvisibleSpace]", "\<\" fF\"\>"}],
+  SequenceForm["Cg = ", 1.4389969130602770951054253454752121057`10., " fF"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023398866415*^9, 3.990023549042973*^9, 3.990023612864784*^9, {
+   3.990028423310579*^9, 3.990028425603426*^9}, {3.9901024284056034`*^9, 
+   3.990102432176344*^9}, 3.990102469187336*^9, {3.990102600946298*^9, 
+   3.990102617245268*^9}, 3.9901027062407207`*^9, 3.990289165971363*^9, {
+   3.9902891998466377`*^9, 3.990289202615898*^9}, 3.990292149403015*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"78ec8f9d-4e04-de4f-8aef-c63261558264"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"L  = \"\>", "\[InvisibleSpace]", 
+   "1.0000000000000000622815914577798564189`10.", 
+   "\[InvisibleSpace]", "\<\" nH\"\>"}],
+  SequenceForm["L  = ", 1.0000000000000000622815914577798564189`10., " nH"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023398866415*^9, 3.990023549042973*^9, 3.990023612864784*^9, {
+   3.990028423310579*^9, 3.990028425603426*^9}, {3.9901024284056034`*^9, 
+   3.990102432176344*^9}, 3.990102469187336*^9, {3.990102600946298*^9, 
+   3.990102617245268*^9}, 3.9901027062407207`*^9, 3.990289165971363*^9, {
+   3.9902891998466377`*^9, 3.990289202615898*^9}, 3.9902921494040184`*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"c7784096-effa-854e-9c6c-d146b734fbc7"],
+
+Cell[BoxData["\<\"\\n--- Verification ---\"\>"], "Print",
+ CellChangeTimes->{
+  3.990023398866415*^9, 3.990023549042973*^9, 3.990023612864784*^9, {
+   3.990028423310579*^9, 3.990028425603426*^9}, {3.9901024284056034`*^9, 
+   3.990102432176344*^9}, 3.990102469187336*^9, {3.990102600946298*^9, 
+   3.990102617245268*^9}, 3.9901027062407207`*^9, 3.990289165971363*^9, {
+   3.9902891998466377`*^9, 3.990289202615898*^9}, 3.9902921494066696`*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"6817652f-7071-e445-98eb-4804f29c7e49"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"ECD    = \"\>", "\[InvisibleSpace]", "288.3608176300287`", 
+   "\[InvisibleSpace]", "\<\" MHz (target: 288)\"\>"}],
+  SequenceForm["ECD    = ", 288.3608176300287, " MHz (target: 288)"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023398866415*^9, 3.990023549042973*^9, 3.990023612864784*^9, {
+   3.990028423310579*^9, 3.990028425603426*^9}, {3.9901024284056034`*^9, 
+   3.990102432176344*^9}, 3.990102469187336*^9, {3.990102600946298*^9, 
+   3.990102617245268*^9}, 3.9901027062407207`*^9, 3.990289165971363*^9, {
+   3.9902891998466377`*^9, 3.990289202615898*^9}, 3.990292149408188*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"b3682c07-f543-d043-81db-66aa447c7b7b"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"omegaD = \"\>", "\[InvisibleSpace]", "7.006654955644596`", 
+   "\[InvisibleSpace]", "\<\" GHz (target: 7)\"\>"}],
+  SequenceForm["omegaD = ", 7.006654955644596, " GHz (target: 7)"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023398866415*^9, 3.990023549042973*^9, 3.990023612864784*^9, {
+   3.990028423310579*^9, 3.990028425603426*^9}, {3.9901024284056034`*^9, 
+   3.990102432176344*^9}, 3.990102469187336*^9, {3.990102600946298*^9, 
+   3.990102617245268*^9}, 3.9901027062407207`*^9, 3.990289165971363*^9, {
+   3.9902891998466377`*^9, 3.990289202615898*^9}, 3.9902921494094734`*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"66d27e17-27c6-724b-9810-16b03e1dcac3"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"omegaF = \"\>", "\[InvisibleSpace]", "9.502331643940652`", 
+   "\[InvisibleSpace]", "\<\" GHz (target: 9.5)\"\>"}],
+  SequenceForm["omegaF = ", 9.502331643940652, " GHz (target: 9.5)"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023398866415*^9, 3.990023549042973*^9, 3.990023612864784*^9, {
+   3.990028423310579*^9, 3.990028425603426*^9}, {3.9901024284056034`*^9, 
+   3.990102432176344*^9}, 3.990102469187336*^9, {3.990102600946298*^9, 
+   3.990102617245268*^9}, 3.9901027062407207`*^9, 3.990289165971363*^9, {
+   3.9902891998466377`*^9, 3.990289202615898*^9}, 3.9902921494117413`*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"5aad1388-d62f-fc41-8621-b3321bf521f1"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"g      = \"\>", "\[InvisibleSpace]", 
+   RowBox[{"-", "42.73512956343389`"}], 
+   "\[InvisibleSpace]", "\<\" MHz (target: 55)\"\>"}],
+  SequenceForm["g      = ", -42.73512956343389, " MHz (target: 55)"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023398866415*^9, 3.990023549042973*^9, 3.990023612864784*^9, {
+   3.990028423310579*^9, 3.990028425603426*^9}, {3.9901024284056034`*^9, 
+   3.990102432176344*^9}, 3.990102469187336*^9, {3.990102600946298*^9, 
+   3.990102617245268*^9}, 3.9901027062407207`*^9, 3.990289165971363*^9, {
+   3.9902891998466377`*^9, 3.990289202615898*^9}, 3.990292149412966*^9},
+ CellLabel->
+  "During evaluation of \
+In[513]:=",ExpressionUUID->"ce6276fa-168f-9746-a6ce-15188cd872aa"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1152, 579.6},
+WindowMargins->{{
+  Automatic, -5.399999999999864}, {-5.399999999999977, Automatic}},
+DockedCells->{
+  Cell[
+   BoxData[
+    DynamicModuleBox[{LinterUIDockedCell`Private`notebook$$}, 
+     GraphicsBox[{
+       InsetBox[
+        TemplateBox[{
+          PaneBox[
+           StyleBox[
+           "\"Code Analysis\"", FontColor -> GrayLevel[0.4], FontFamily -> 
+            "Source Sans Pro", FontWeight -> Plain, FontSize -> 13, 
+            StripOnInput -> False], 
+           BaselinePosition -> (Baseline -> Scaled[0.65])], 
+          TemplateBox[{8}, "Spacer1"], 
+          PaneBox[
+           
+           PaneSelectorBox[{{False, False} -> 
+             TemplateBox[{0}, "Spacer1"], {True, False} -> 
+             TemplateBox[{0}, "Spacer1"], {True, True} -> PaneBox[
+               InterpretationBox[
+                DynamicBox[
+                 FEPrivate`FrontEndResource[
+                 "FEExpressions", "PercolateAnimator"][Medium]], 
+                ProgressIndicator[Appearance -> "Percolate"], 
+                BaseStyle -> {"Deploy"}], BaselinePosition -> Scaled[0.05]], {
+              False, True} -> 
+             DynamicModuleBox[{
+               CodeInspector`LinterUI`Private`tracker$$ = 
+                CodeInspector`LinterUI`Private`DynamicTriggers`\
+dockedCellLintCounts}, 
+               DynamicWrapperBox[
+                DynamicBox[
+                 ToBoxes[
+                 CodeInspector`LinterUI`Private`tracker$$; 
+                  LinterUIDockedCell`Private`dockedCellSeverityCountsButton[
+                   LinterUIDockedCell`Private`notebook$$], TraditionalForm], 
+                 TrackedSymbols :> {
+                  CodeInspector`LinterUI`Private`tracker$$}], 
+                If[
+                CodeInspector`LinterUI`Private`tracker$$ =!= 
+                 CodeInspector`LinterUI`Private`DynamicTriggers`\
+dockedCellLintCounts, CodeInspector`LinterUI`Private`tracker$$ = 
+                 CodeInspector`LinterUI`Private`DynamicTriggers`\
+dockedCellLintCounts]], DynamicModuleValues :> {}]}, 
+            Dynamic[FEPrivate`EvaluatorStatus["Local"]; {
+               CodeInspector`LinterUI`Private`varValue[
+               LinterUIDockedCell`Private`notebook$$, "AnalysisInProgressQ"], 
+               TrueQ[
+                CodeInspector`LinterUI`Private`varValue[
+                LinterUIDockedCell`Private`notebook$$, 
+                 "DockedCellPresentQ"]]}], ImageSize -> Automatic], 
+           BaselinePosition -> Scaled[0.15]]}, "Row", 
+         DisplayFunction -> (PaneBox[
+           RowBox[{
+             TemplateSlotSequence[1, "\[InvisibleSpace]"]}], Alignment -> 
+           Baseline]& ), InterpretationFunction -> (RowBox[{"Row", "[", 
+            RowBox[{
+              RowBox[{"{", 
+                TemplateSlotSequence[1, ","], "}"}], ",", 
+              RowBox[{"Alignment", "\[Rule]", "Baseline"}]}], "]"}]& )], 
+        Offset[{8, 0}, {-1, 0}], {-1, 0}], 
+       InsetBox[
+        PaneSelectorBox[{
+         True -> DynamicModuleBox[{
+            CodeInspector`LinterUI`Private`hoverQ$$ = False, 
+             CodeInspector`LinterUI`Private`mouseDownQ$$ = False, 
+             CodeInspector`LinterUI`Private`fontColor$$}, 
+            ButtonBox[
+             DynamicWrapperBox[
+              TemplateBox[{
+                DynamicWrapperBox[
+                 StyleBox[
+                  PaneBox[
+                  "\"Reanalyze Notebook\"", ContentPadding -> True, 
+                   FrameMargins -> None, BaselinePosition -> Baseline], 
+                  FontColor -> 
+                  Dynamic[CodeInspector`LinterUI`Private`fontColor$$], 
+                  FontColor -> GrayLevel[0.2], FontFamily -> 
+                  "Source Sans Pro", FontWeight -> Plain, FontSize -> 14, 
+                  StripOnInput -> False], 
+                 CodeInspector`LinterUI`Private`fontColor$$ = Which[
+                   TrueQ[
+                    Not[
+                    
+                    OptionValue[{
+                    ImageSize -> {Automatic, 19}, 
+                    FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                    Baseline, Alignment -> {Center, Center}, Method -> 
+                    "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                    "TextHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                    "BackHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                    "EdgeHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, 
+                    "ActiveQ"]]], 
+                   
+                   OptionValue[{
+                    ImageSize -> {Automatic, 19}, 
+                    FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                    Baseline, Alignment -> {Center, Center}, Method -> 
+                    "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                    "TextHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                    "BackHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                    "EdgeHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, 
+                    "TextInactiveColor"], 
+                   CodeInspector`LinterUI`Private`hoverQ$$, 
+                   
+                   OptionValue[{
+                    ImageSize -> {Automatic, 19}, 
+                    FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                    Baseline, Alignment -> {Center, Center}, Method -> 
+                    "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                    "TextHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                    "BackHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                    "EdgeHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, 
+                    "TextHoverColor"], True, 
+                   
+                   OptionValue[{
+                    ImageSize -> {Automatic, 19}, 
+                    FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                    Baseline, Alignment -> {Center, Center}, Method -> 
+                    "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                    "TextHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                    "BackHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                    "EdgeHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, 
+                    "TextColor"]]], ContentPadding -> False, 
+                FrameMargins -> {{9, 9}, {0, 0}}, 
+                Alignment -> {Center, Center}, ImageSize -> {Automatic, 19}, 
+                RoundingRadius -> 3, FrameStyle -> Dynamic[
+                  Directive[
+                   AbsoluteThickness[0.5], 
+                   Which[
+                    TrueQ[
+                    Not[
+                    
+                    OptionValue[{
+                    ImageSize -> {Automatic, 19}, 
+                    FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                    Baseline, Alignment -> {Center, Center}, Method -> 
+                    "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                    "TextHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                    "BackHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                    "EdgeHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, 
+                    "ActiveQ"]]], 
+                    
+                    OptionValue[{
+                    ImageSize -> {Automatic, 19}, 
+                    FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                    Baseline, Alignment -> {Center, Center}, Method -> 
+                    "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                    "TextHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                    "BackHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                    "EdgeHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, 
+                    "EdgeInactiveColor"], 
+                    CodeInspector`LinterUI`Private`hoverQ$$, 
+                    
+                    OptionValue[{
+                    ImageSize -> {Automatic, 19}, 
+                    FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                    Baseline, Alignment -> {Center, Center}, Method -> 
+                    "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                    "TextHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                    "BackHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                    "EdgeHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, 
+                    "EdgeHoverColor"], True, 
+                    
+                    OptionValue[{
+                    ImageSize -> {Automatic, 19}, 
+                    FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                    Baseline, Alignment -> {Center, Center}, Method -> 
+                    "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                    "TextHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                    "BackHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                    "EdgeHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, 
+                    "EdgeColor"]]]], Background -> Dynamic[
+                  Which[
+                   TrueQ[
+                    Not[
+                    
+                    OptionValue[{
+                    ImageSize -> {Automatic, 19}, 
+                    FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                    Baseline, Alignment -> {Center, Center}, Method -> 
+                    "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                    "TextHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                    "BackHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                    "EdgeHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, 
+                    "ActiveQ"]]], 
+                   
+                   OptionValue[{
+                    ImageSize -> {Automatic, 19}, 
+                    FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                    Baseline, Alignment -> {Center, Center}, Method -> 
+                    "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                    "TextHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                    "BackHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                    "EdgeHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, 
+                    "BackInactiveColor"], 
+                   And[
+                   CodeInspector`LinterUI`Private`hoverQ$$, 
+                    CodeInspector`LinterUI`Private`mouseDownQ$$], 
+                   
+                   OptionValue[{
+                    ImageSize -> {Automatic, 19}, 
+                    FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                    Baseline, Alignment -> {Center, Center}, Method -> 
+                    "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                    "TextHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                    "BackHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                    "EdgeHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, 
+                    "BackMouseDownColor"], 
+                   CodeInspector`LinterUI`Private`hoverQ$$, 
+                   
+                   OptionValue[{
+                    ImageSize -> {Automatic, 19}, 
+                    FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                    Baseline, Alignment -> {Center, Center}, Method -> 
+                    "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                    "TextHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                    "BackHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                    "EdgeHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, 
+                    "BackHoverColor"], True, 
+                   
+                   OptionValue[{
+                    ImageSize -> {Automatic, 19}, 
+                    FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                    Baseline, Alignment -> {Center, Center}, Method -> 
+                    "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                    "TextHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                    "BackHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                    CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                    "EdgeHoverColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                    CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, 
+                    "BackColor"]]]}, "Highlighted"], 
+              CodeInspector`LinterUI`Private`hoverQ$$ = 
+               CurrentValue["MouseOver"]; 
+              CodeInspector`LinterUI`Private`mouseDownQ$$ = 
+               CurrentValue["MouseButtonTest"]], 
+             Appearance -> {
+              "Default" -> 
+               Image[RawArray["UnsignedInteger8",{{{255, 255, 255, 255}, {0, 
+                  0, 0, 255}, {255, 255, 255, 255}}, {{0, 0, 0, 255}, {0, 0, 
+                  0, 0}, {0, 0, 0, 255}}, {{255, 255, 255, 255}, {0, 0, 0, 
+                  255}, {255, 255, 255, 255}}}], "Byte", ColorSpace -> "RGB", 
+                 ImageResolution -> {72, 72}, Interleaving -> True], "Hover" -> 
+               Image[RawArray["UnsignedInteger8",{{{255, 255, 255, 255}, {0, 
+                  0, 0, 255}, {255, 255, 255, 255}}, {{0, 0, 0, 255}, {0, 0, 
+                  0, 0}, {0, 0, 0, 255}}, {{255, 255, 255, 255}, {0, 0, 0, 
+                  255}, {255, 255, 255, 255}}}], "Byte", ColorSpace -> "RGB", 
+                 ImageResolution -> {72, 72}, Interleaving -> True], 
+               "Pressed" -> 
+               Image[RawArray["UnsignedInteger8",{{{255, 255, 255, 255}, {0, 
+                  0, 0, 255}, {255, 255, 255, 255}}, {{0, 0, 0, 255}, {0, 0, 
+                  0, 0}, {0, 0, 0, 255}}, {{255, 255, 255, 255}, {0, 0, 0, 
+                  255}, {255, 255, 255, 255}}}], "Byte", ColorSpace -> "RGB", 
+                 ImageResolution -> {72, 72}, Interleaving -> True]}, 
+             BaselinePosition -> Baseline, 
+             ButtonFunction :> (
+              If[OptionValue[{
+                  ImageSize -> {Automatic, 19}, 
+                   FrameMargins -> {9 {1, 1}, 0 {1, 1}}, BaselinePosition -> 
+                   Baseline, Alignment -> {Center, Center}, Method -> 
+                   "Preemptive", "ActiveQ" -> True, "TextColor" -> 
+                   CodeInspector`LinterUI`Private`colorData["ButtonText"], 
+                   "TextHoverColor" -> 
+                   CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextHover"], "TextInactiveColor" -> 
+                   CodeInspector`LinterUI`Private`colorData[
+                    "ButtonTextInactive"], "BackColor" -> 
+                   CodeInspector`LinterUI`Private`colorData["ButtonBack"], 
+                   "BackHoverColor" -> 
+                   CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackHover"], "BackMouseDownColor" -> 
+                   CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackMouseDown"], "BackInactiveColor" -> 
+                   CodeInspector`LinterUI`Private`colorData[
+                    "ButtonBackInactive"], "EdgeColor" -> 
+                   CodeInspector`LinterUI`Private`colorData["ButtonEdge"], 
+                   "EdgeHoverColor" -> 
+                   CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeHover"], "EdgeInactiveColor" -> 
+                   CodeInspector`LinterUI`Private`colorData[
+                    "ButtonEdgeInactive"]}, {Method -> "Queued"}, "ActiveQ"] =!= 
+                False, 
+                CodeInspector`LinterUI`Private`attachAnalysisAction[
+                 EvaluationNotebook[]]]; 
+              CodeInspector`LinterUI`Private`mouseDownQ$$ = False), 
+             ContentPadding -> False, Evaluator -> Automatic, Method -> 
+             "Queued"], DynamicModuleValues :> {}], False -> ButtonBox[
+            TemplateBox[{
+              StyleBox[
+              "\"Analyze Notebook\"", FontColor -> GrayLevel[0.2], FontFamily -> 
+               "Source Sans Pro", FontWeight -> Plain, FontSize -> 14, 
+               StripOnInput -> False], ImageSize -> {Automatic, 19}, 
+              FrameMargins -> {{9, 9}, {0, 0}}, BaselinePosition -> Baseline, 
+              Alignment -> {Center, Center}, Background -> GrayLevel[1], 
+              FrameStyle -> Dynamic[
+                If[
+                 CurrentValue["MouseOver"], 
+                 Hue[0.55, 0.82, 0.87], 
+                 GrayLevel[0.8]]]}, "Highlighted"], 
+            Appearance -> {
+             "Default" -> 
+              Image[RawArray["UnsignedInteger8",{{{255, 255, 255, 255}, {0, 0,
+                  0, 255}, {255, 255, 255, 255}}, {{0, 0, 0, 255}, {0, 0, 0, 
+                 0}, {0, 0, 0, 255}}, {{255, 255, 255, 255}, {0, 0, 0, 255}, {
+                 255, 255, 255, 255}}}], "Byte", ColorSpace -> "RGB", 
+                ImageResolution -> {72, 72}, Interleaving -> True], "Hover" -> 
+              Image[RawArray["UnsignedInteger8",{{{255, 255, 255, 255}, {0, 0,
+                  0, 255}, {255, 255, 255, 255}}, {{0, 0, 0, 255}, {0, 0, 0, 
+                 0}, {0, 0, 0, 255}}, {{255, 255, 255, 255}, {0, 0, 0, 255}, {
+                 255, 255, 255, 255}}}], "Byte", ColorSpace -> "RGB", 
+                ImageResolution -> {72, 72}, Interleaving -> True], "Pressed" -> 
+              Image[RawArray["UnsignedInteger8",{{{255, 255, 255, 255}, {0, 0,
+                  0, 255}, {255, 255, 255, 255}}, {{0, 0, 0, 255}, {0, 0, 0, 
+                 0}, {0, 0, 0, 255}}, {{255, 255, 255, 255}, {0, 0, 0, 255}, {
+                 255, 255, 255, 255}}}], "Byte", ColorSpace -> "RGB", 
+                ImageResolution -> {72, 72}, Interleaving -> True]}, 
+            ButtonFunction :> (CurrentValue[
+                EvaluationNotebook[], DockedCells] = 
+              With[{LinterUIDockedCell`Private`dockedCells = CurrentValue[
+                   EvaluationNotebook[], DockedCells]}, 
+                Pick[LinterUIDockedCell`Private`dockedCells, 
+                 Map[Quiet[
+                    Options[#, CellTags]] =!= {
+                   CellTags -> "CodeAnalysisDockedCell"}& , 
+                  LinterUIDockedCell`Private`dockedCells]]]; 
+             Needs["CodeInspector`"]; 
+             CodeInspector`AttachAnalysis[
+              LinterUIDockedCell`Private`notebook$$]), Evaluator -> Automatic,
+             Method -> "Queued"]}, 
+         Dynamic[FEPrivate`EvaluatorStatus["Local"]; TrueQ[
+            CodeInspector`LinterUI`Private`varValue[
+            LinterUIDockedCell`Private`notebook$$, "DockedCellPresentQ"]]], 
+         ImageSize -> Automatic], 
+        Offset[{-26, 0}, {1, 0}], {1, 0}], 
+       TagBox[
+        TagBox[
+         TooltipBox[{{
+            GrayLevel[0.6], 
+            DiskBox[
+             Offset[{-11, 0}, {1, 0}], 
+             Offset[6]]}, {
+            GrayLevel[0.97], 
+            AbsoluteThickness[1.5], 
+            CapForm["Round"], 
+            LineBox[{{
+               Offset[{-13, 2}, {1, 0}], 
+               Offset[{-9, -2}, {1, 0}]}, {
+               Offset[{-13, -2}, {1, 0}], 
+               Offset[{-9, 2}, {1, 0}]}}]}}, "\"Close analysis\"", 
+          TooltipDelay -> 0, TooltipStyle -> "TextStyling"], 
+         Annotation[#, "Close analysis", "Tooltip"]& ], 
+        EventHandlerTag[{"MouseClicked" :> (Map[NotebookDelete, 
+             Flatten[
+              CodeInspector`LinterUI`Private`varValue[
+              LinterUIDockedCell`Private`notebook$$, All, 
+               "UIAttachedCells"]]]; Map[NotebookDelete, 
+             Flatten[
+              CodeInspector`LinterUI`Private`varValue[
+              LinterUIDockedCell`Private`notebook$$, All, 
+               "CleanCellBracketMarker"]]]; CurrentValue[
+              EvaluationNotebook[], DockedCells] = 
+            With[{LinterUIDockedCell`Private`dockedCells = CurrentValue[
+                 EvaluationNotebook[], DockedCells]}, 
+              Pick[LinterUIDockedCell`Private`dockedCells, 
+               Map[Quiet[
+                  Options[#, CellTags]] =!= {
+                 CellTags -> "CodeAnalysisDockedCell"}& , 
+                LinterUIDockedCell`Private`dockedCells]]]; 
+           CodeInspector`LinterUI`Private`applyToVar[Remove, {
+              EvaluationNotebook[], All}]; 
+           CodeInspector`LinterUI`Private`varSet[{
+             LinterUIDockedCell`Private`notebook$$, "DockedCellPresentQ"}, 
+             False]), Method -> "Preemptive", PassEventsDown -> Automatic, 
+          PassEventsUp -> True}]]}, AspectRatio -> Full, 
+      ImageSize -> {Full, 23}, PlotRange -> {{-1, 1}, {-1, 1}}], 
+     Deinitialization :> 
+     CodeInspector`LinterUI`Private`varSet[{
+       LinterUIDockedCell`Private`notebook$$, "DockedCellPresentQ"}, False], 
+     DynamicModuleValues :> {}, 
+     Initialization :> ({
+       LinterUIDockedCell`Private`dockedCellSeverityCountsButton[
+          Pattern[LinterUIDockedCell`Private`notebook, 
+           Blank[NotebookObject]]] := 
+        With[{LinterUIDockedCell`Private`formatIcon = 
+           Show[#, ImageSize -> {13, 9}, BaselinePosition -> Scaled[-0.2]]& }, 
+          ActionMenu[
+           Highlighted[
+            Row[{
+              CodeInspector`LinterUI`Private`lintSeverityCountsIconRow[
+              LinterUIDockedCell`Private`notebook, "exclamSize" -> 12, 
+               FontSize -> 14, FontWeight -> Plain], 
+              Spacer[2], 
+              LinterUIDockedCell`Private`formatIcon[
+               CodeInspector`LinterUI`Private`iconData["DownChevron"][
+                CodeInspector`LinterUI`Private`colorData["UIDark"]]]}], 
+            ImageSize -> {Automatic, 19}, BaselinePosition -> Baseline, 
+            Background -> White, Frame -> True, FrameStyle -> Dynamic[
+              If[
+               CurrentValue["MouseOver"], 
+               Hue[0.55, 0.82, 0.87], 
+               GrayLevel[0.8]]], FrameMargins -> {6 {1, 1}, {1, 1}}, 
+            Alignment -> {Center, Baseline}], 
+           Map[
+           LinterUIDockedCell`Private`dockedCellMenuItem[
+            LinterUIDockedCell`Private`notebook, #]& , 
+            CodeInspector`LinterUI`Private`varValue[
+            LinterUIDockedCell`Private`notebook, All, "Cell"]], Appearance -> 
+           None]], LinterUIDockedCell`Private`dockedCellMenuItem[
+          Pattern[LinterUIDockedCell`Private`notebook, 
+           Blank[NotebookObject]], 
+          Pattern[LinterUIDockedCell`Private`cell, 
+           Blank[CellObject]]] := With[{}, Graphics[{
+             Inset[
+              With[{LinterUIDockedCell`Private`expressionString = First[
+                  FrontEndExecute[
+                   FrontEnd`ExportPacket[
+                    First[
+                    CodeInspector`LinterUI`Private`varValue[
+                    LinterUIDockedCell`Private`notebook, 
+                    LinterUIDockedCell`Private`cell, "CellContents"]], 
+                    "InputText"]]]}, {
+               LinterUIDockedCell`Private`noLineBreaks = 
+                StringReplace[
+                 LinterUIDockedCell`Private`expressionString, "\n" -> " "]}, {
+               LinterUIDockedCell`Private`previewString = 
+                StringTake[LinterUIDockedCell`Private`noLineBreaks, {1, 
+                   UpTo[LinterUIDockedCell`Private`$previewLength]}]}, 
+               CodeInspector`LinterUI`Private`styleData["FixedWidth"][
+                If[
+                StringLength[LinterUIDockedCell`Private`expressionString] > 
+                 LinterUIDockedCell`Private`$previewLength, 
+                 StringDrop[LinterUIDockedCell`Private`previewString, -1] <> 
+                 "\[Ellipsis]", 
+                 LinterUIDockedCell`Private`previewString]]], {-1, 0}, {-1, 
+              0}], 
+             Inset[
+              CodeInspector`LinterUI`Private`lintSeverityCountsIconRow[
+              LinterUIDockedCell`Private`cell], {1, 0}, {1, 0}]}, 
+            ImageSize -> {300, 25}, AspectRatio -> Full, 
+            PlotRange -> {{-1, 1}, {-1, 1}}, ImagePadding -> None] :> (
+           SelectionMove[LinterUIDockedCell`Private`cell, All, Cell]; 
+           With[{LinterUIDockedCell`Private`nb = 
+              ParentNotebook[LinterUIDockedCell`Private`cell]}, 
+             FrontEndExecute[
+              FrontEnd`FrontEndToken[
+              LinterUIDockedCell`Private`nb, "OpenSelectionParents"]]]; 
+           SelectionMove[LinterUIDockedCell`Private`cell, After, Cell])], 
+        LinterUIDockedCell`Private`$previewLength = 28, 
+        CodeInspector`LinterUI`Private`applyToVar[
+          Pattern[CodeInspector`LinterUI`Private`function, 
+           Blank[]], {
+           Pattern[CodeInspector`LinterUI`Private`notebook, 
+            Blank[NotebookObject]], All, 
+           Pattern[CodeInspector`LinterUI`Private`name, 
+            Blank[String]]}, 
+          Pattern[CodeInspector`LinterUI`Private`args, 
+           BlankNullSequence[]]] := 
+        Map[Apply[CodeInspector`LinterUI`Private`function, 
+           Join[
+            ToHeldExpression[#], 
+            Hold[CodeInspector`LinterUI`Private`args]]]& , 
+          
+          Names[(CodeInspector`LinterUI`Private`varNameString[
+             CodeInspector`LinterUI`Private`notebook] <> "*") <> 
+           CodeInspector`LinterUI`Private`name]], Null, 
+        CodeInspector`LinterUI`Private`applyToVar[
+          Pattern[CodeInspector`LinterUI`Private`function, 
+           Blank[]], {
+           Pattern[CodeInspector`LinterUI`Private`nameArguments, 
+            BlankSequence[]], 
+           Pattern[CodeInspector`LinterUI`Private`name, 
+            Blank[String]]}, 
+          Pattern[CodeInspector`LinterUI`Private`args, 
+           BlankNullSequence[]]] := 
+        Apply[CodeInspector`LinterUI`Private`function, 
+          Join[
+           ToHeldExpression[
+            CodeInspector`LinterUI`Private`varNameString[
+            CodeInspector`LinterUI`Private`nameArguments]], 
+           Hold[CodeInspector`LinterUI`Private`args]]], Null, 
+        CodeInspector`LinterUI`Private`applyToVar[
+          Pattern[CodeInspector`LinterUI`Private`function, 
+           Blank[]], {
+           Pattern[CodeInspector`LinterUI`Private`nameArguments, 
+            BlankSequence[]], All}, 
+          Pattern[CodeInspector`LinterUI`Private`args, 
+           BlankNullSequence[]]] := 
+        Map[Apply[CodeInspector`LinterUI`Private`function, 
+           Join[
+            ToHeldExpression[#], 
+            Hold[CodeInspector`LinterUI`Private`args]]]& , 
+          Names[
+          CodeInspector`LinterUI`Private`varNameString[
+            CodeInspector`LinterUI`Private`nameArguments] <> "*"]], 
+        CodeInspector`LinterUI`Private`varValue[
+          Pattern[CodeInspector`LinterUI`Private`notebook, 
+           Blank[NotebookObject]], All, 
+          Pattern[CodeInspector`LinterUI`Private`name, 
+           Blank[String]]] := Map[Symbol, 
+          
+          Names[(CodeInspector`LinterUI`Private`varNameString[
+             CodeInspector`LinterUI`Private`notebook] <> "*") <> 
+           CodeInspector`LinterUI`Private`name]], Null, 
+        CodeInspector`LinterUI`Private`varValue[
+          Pattern[CodeInspector`LinterUI`Private`nameArguments, 
+           BlankSequence[]], 
+          Pattern[CodeInspector`LinterUI`Private`name, 
+           Blank[String]]] := Symbol[
+          CodeInspector`LinterUI`Private`varNameString[
+          CodeInspector`LinterUI`Private`nameArguments, 
+           CodeInspector`LinterUI`Private`name]], Null, 
+        CodeInspector`LinterUI`Private`varValue[
+          Pattern[CodeInspector`LinterUI`Private`nameArguments, 
+           BlankSequence[]], All] := Map[Symbol, 
+          Names[
+          CodeInspector`LinterUI`Private`varNameString[
+            CodeInspector`LinterUI`Private`nameArguments] <> "*"]], 
+        CodeInspector`LinterUI`Private`varSet[{
+           Pattern[CodeInspector`LinterUI`Private`nameArguments, 
+            BlankSequence[]]}, 
+          Pattern[CodeInspector`LinterUI`Private`value, 
+           Blank[]]] := Apply[Set, 
+          Append[
+           ToHeldExpression[
+            CodeInspector`LinterUI`Private`varNameString[
+            CodeInspector`LinterUI`Private`nameArguments]], 
+           CodeInspector`LinterUI`Private`value]], 
+        CodeInspector`LinterUI`Private`varNameString[
+          Pattern[CodeInspector`LinterUI`Private`notebook, 
+           Blank[NotebookObject]]] := ((
+           "CodeInspector`LinterUI`Private`Vars`" <> "$$") <> 
+          With[{CodeInspector`LinterUI`Private`nbID = 
+             Last[CodeInspector`LinterUI`Private`notebook]}, 
+            If[
+             StringQ[CodeInspector`LinterUI`Private`nbID], 
+             StringReplace[CodeInspector`LinterUI`Private`nbID, "-" -> "$"], 
+             ToString[CodeInspector`LinterUI`Private`nbID]]]) <> "$$", Null, 
+        CodeInspector`LinterUI`Private`varNameString[
+          Pattern[CodeInspector`LinterUI`Private`cell, 
+           Blank[CellObject]]] := (
+          CodeInspector`LinterUI`Private`varNameString[
+            Replace[
+             ParentNotebook[CodeInspector`LinterUI`Private`cell], $Failed -> 
+             EvaluationNotebook[]]] <> 
+          With[{CodeInspector`LinterUI`Private`cellID = 
+             First[CodeInspector`LinterUI`Private`cell]}, 
+            If[
+             StringQ[CodeInspector`LinterUI`Private`cellID], 
+             StringReplace[CodeInspector`LinterUI`Private`cellID, "-" -> "$"], 
+             ToString[CodeInspector`LinterUI`Private`cellID]]]) <> "$$", Null,
+         CodeInspector`LinterUI`Private`varNameString[
+          Pattern[CodeInspector`LinterUI`Private`notebook, 
+           Blank[NotebookObject]], 
+          Pattern[CodeInspector`LinterUI`Private`cell, 
+           Blank[CellObject]]] := (
+          CodeInspector`LinterUI`Private`varNameString[
+           CodeInspector`LinterUI`Private`notebook] <> 
+          With[{CodeInspector`LinterUI`Private`cellID = 
+             First[CodeInspector`LinterUI`Private`cell]}, 
+            If[
+             StringQ[CodeInspector`LinterUI`Private`cellID], 
+             StringReplace[CodeInspector`LinterUI`Private`cellID, "-" -> "$"], 
+             ToString[CodeInspector`LinterUI`Private`cellID]]]) <> "$$", Null,
+         CodeInspector`LinterUI`Private`varNameString[
+          Pattern[CodeInspector`LinterUI`Private`notebook, 
+           Blank[NotebookObject]], 
+          Pattern[CodeInspector`LinterUI`Private`name, 
+           Blank[String]]] := 
+        CodeInspector`LinterUI`Private`varNameString[
+          CodeInspector`LinterUI`Private`notebook] <> 
+         CodeInspector`LinterUI`Private`name, Null, 
+        CodeInspector`LinterUI`Private`varNameString[
+          Pattern[CodeInspector`LinterUI`Private`cell, 
+           Blank[CellObject]], 
+          Pattern[CodeInspector`LinterUI`Private`name, 
+           Blank[String]]] := 
+        CodeInspector`LinterUI`Private`varNameString[
+          CodeInspector`LinterUI`Private`cell] <> 
+         CodeInspector`LinterUI`Private`name, Null, 
+        CodeInspector`LinterUI`Private`varNameString[
+          Pattern[CodeInspector`LinterUI`Private`notebook, 
+           Blank[NotebookObject]], 
+          Pattern[CodeInspector`LinterUI`Private`cell, 
+           Blank[CellObject]], 
+          Pattern[CodeInspector`LinterUI`Private`name, 
+           Blank[String]]] := 
+        CodeInspector`LinterUI`Private`varNameString[
+          CodeInspector`LinterUI`Private`notebook, 
+           CodeInspector`LinterUI`Private`cell] <> 
+         CodeInspector`LinterUI`Private`name, Null, 
+        CodeInspector`LinterUI`Private`varNameString[
+          Pattern[CodeInspector`LinterUI`Private`nameArguments, 
+           BlankSequence[]], 
+          Pattern[CodeInspector`LinterUI`Private`lint, 
+           Blank[CodeInspector`InspectionObject]], 
+          Pattern[CodeInspector`LinterUI`Private`name, 
+           Blank[String]]] := ((
+           CodeInspector`LinterUI`Private`varNameString[
+            CodeInspector`LinterUI`Private`nameArguments] <> Apply[Sequence, 
+             Riffle[
+              Map[StringDelete[
+                ToString[#], 
+                Alternatives["[", "]", "{", "}", ",", " "]]& , 
+               CodeInspector`LinterUI`Private`extractFirstList[
+                Last[CodeInspector`LinterUI`Private`lint][
+                CodeParser`Source]]], "$"]]) <> "$$") <> 
+         CodeInspector`LinterUI`Private`name, 
+        CodeInspector`LinterUI`Private`extractFirstList[
+          Pattern[CodeInspector`LinterUI`Private`expr, 
+           Blank[]]] := FirstCase[CodeInspector`LinterUI`Private`expr, 
+          Blank[List], {}, {0, Infinity}]}; 
+      LinterUIDockedCell`Private`notebook$$ = EvaluationNotebook[]), 
+     UnsavedVariables :> {LinterUIDockedCell`Private`notebook$$}]], 
+   CellFrame -> {{0, 0}, {1, 1}}, CellFrameMargins -> {{0, 0}, {0, 0}}, 
+   CellFrameColor -> GrayLevel[0.85], Background -> GrayLevel[0.97], CellTags -> 
+   "CodeAnalysisDockedCell"]},
+PrintingCopies->1,
+PrintingPageRange->{Automatic, Automatic},
+PrintingOptions->{"Magnification"->1.,
+"PaperOrientation"->"Portrait",
+"PaperSize"->{612, 792}},
+FrontEndVersion->"14.0 for Microsoft Windows (64-bit) (December 12, 2023)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"920e5a6a-188f-c643-bd37-ab11ccb650e8"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 13149, 400, 1323, "Input",ExpressionUUID->"85337cca-bc39-3349-92dd-97fe2c28d8d3"],
+Cell[CellGroupData[{
+Cell[13754, 426, 733, 14, 22, "Print",ExpressionUUID->"a72aaeab-2124-6b48-ba20-3a1f2173221d"],
+Cell[14490, 442, 751, 14, 22, "Print",ExpressionUUID->"6693a163-28ca-0544-9cf2-eeeabdc66323"],
+Cell[15244, 458, 721, 14, 22, "Print",ExpressionUUID->"0a832b1e-55de-a34f-b6ff-b15bcc0c9714"]
+}, Open  ]],
+Cell[15980, 475, 4363, 66, 59, "Message",ExpressionUUID->"77d1f801-87a9-3e47-bbb4-7f1af1d2e676"],
+Cell[20346, 543, 833, 15, 35, "Output",ExpressionUUID->"6e1bb519-9f23-eb47-9024-b9fd884b1578"],
+Cell[CellGroupData[{
+Cell[21204, 562, 544, 9, 40, "Print",ExpressionUUID->"c7c0e798-3412-224a-a5b4-a7c53638569e"],
+Cell[21751, 573, 732, 14, 22, "Print",ExpressionUUID->"7a961e2b-716d-0c41-b35b-cb1132d7df01"],
+Cell[22486, 589, 736, 14, 22, "Print",ExpressionUUID->"6f629c11-af82-7347-9c02-c9f02415befb"],
+Cell[23225, 605, 770, 15, 22, "Print",ExpressionUUID->"78ec8f9d-4e04-de4f-8aef-c63261558264"],
+Cell[23998, 622, 772, 15, 22, "Print",ExpressionUUID->"c7784096-effa-854e-9c6c-d146b734fbc7"],
+Cell[24773, 639, 548, 9, 40, "Print",ExpressionUUID->"6817652f-7071-e445-98eb-4804f29c7e49"],
+Cell[25324, 650, 753, 14, 22, "Print",ExpressionUUID->"b3682c07-f543-d043-81db-66aa447c7b7b"],
+Cell[26080, 666, 751, 14, 22, "Print",ExpressionUUID->"66d27e17-27c6-724b-9810-16b03e1dcac3"],
+Cell[26834, 682, 755, 14, 22, "Print",ExpressionUUID->"5aad1388-d62f-fc41-8621-b3321bf521f1"],
+Cell[27592, 698, 771, 15, 22, "Print",ExpressionUUID->"ce6276fa-168f-9746-a6ce-15188cd872aa"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

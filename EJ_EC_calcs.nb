@@ -1,0 +1,228 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 14.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      7709,        220]
+NotebookOptionsPosition[      6721,        196]
+NotebookOutlinePosition[      7126,        212]
+CellTagsIndexPosition[      7083,        209]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Clear", "[", "\"\<Global`*\>\"", "]"}], "\n", 
+  "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"EC", " ", "is", " ", "defined", " ", "from", " ", "the", " ", 
+      RowBox[{"ratio", ":", "ratio"}]}], "=", 
+     RowBox[{"EJ", "/", "EC"}]}], ",", 
+    RowBox[{
+     RowBox[{"so", " ", "EC"}], "=", 
+     RowBox[{"EJ", "/", "ratio"}]}]}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"EC", "[", 
+    RowBox[{"EJ_", ",", "ratio_"}], "]"}], ":=", 
+   RowBox[{"EJ", "/", "ratio"}]}], "\n", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"Transmon", " ", "frequency", " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"in", " ", "GHz"}], ",", 
+      RowBox[{
+      "assuming", " ", "EJ", " ", "and", " ", "EC", " ", "in", " ", "GHz"}]}],
+      ")"}]}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"omega", "[", 
+    RowBox[{"EJ_", ",", "ratio_"}], "]"}], ":=", 
+   RowBox[{
+    RowBox[{"Sqrt", "[", 
+     RowBox[{"8", "*", 
+      RowBox[{"EC", "[", 
+       RowBox[{"EJ", ",", "ratio"}], "]"}], "*", "EJ"}], "]"}], "-", 
+    RowBox[{"EC", "[", 
+     RowBox[{"EJ", ",", "ratio"}], "]"}]}]}], "\[IndentingNewLine]", "\n", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"--", 
+     RowBox[{"-", 
+      RowBox[{"Inputs", "--"}]}]}], "-"}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"targetFreq", "=", " ", "4.5"}], ";"}], "    ", 
+  RowBox[{"(*", "GHz", "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"targetRatio", "=", "70"}], ";"}], "   ", 
+  RowBox[{"(*", 
+   RowBox[{"EJ", "/", "EC"}], "*)"}], "\[IndentingNewLine]", 
+  "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"--", 
+      RowBox[{"-", "Solve"}]}], " ", "for", " ", 
+     RowBox[{"EJ", "--"}]}], "-"}], "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{"sol", "=", 
+   RowBox[{"NSolve", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"omega", "[", 
+         RowBox[{"EJ", ",", "targetRatio"}], "]"}], "==", "targetFreq"}], ",", 
+       RowBox[{"EJ", ">", "0"}]}], "}"}], ",", "EJ"}], "]"}]}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"--", 
+      RowBox[{"-", "Extract"}]}], " ", "and", " ", "compute", " ", 
+     RowBox[{"EC", "--"}]}], "-"}], "*)"}]}], "\n", 
+ RowBox[{"EJsol", "=", 
+  RowBox[{"EJ", "/.", " ", 
+   RowBox[{"First", "[", "sol", "]"}]}]}], "\n", 
+ RowBox[{
+  RowBox[{"ECsol", "=", 
+   RowBox[{"EC", "[", 
+    RowBox[{"EJsol", ",", "targetRatio"}], "]"}]}], 
+  "\[IndentingNewLine]"}], "\n", 
+ RowBox[{"Print", "[", 
+  RowBox[{"\"\<Target EJ = \>\"", ",", "EJsol", ",", "\"\< GHz\>\""}], 
+  "]"}], "\n", 
+ RowBox[{"Print", "[", 
+  RowBox[{"\"\<Target EC = \>\"", ",", "ECsol", ",", "\"\< GHz\>\""}], 
+  "]"}], "\n", 
+ RowBox[{"Print", "[", 
+  RowBox[{"\"\<Verification - omega = \>\"", ",", 
+   RowBox[{"omega", "[", 
+    RowBox[{"EJsol", ",", "targetRatio"}], "]"}], ",", "\"\< GHz\>\""}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.99002352474959*^9, 3.990023524749975*^9}, {
+  3.9900978420727367`*^9, 3.990097870052822*^9}, {3.990098481762377*^9, 
+  3.9900985042842045`*^9}, {3.9900985478962097`*^9, 3.9900985482104797`*^9}, {
+  3.9900985852173023`*^9, 3.990098587577818*^9}},
+ CellLabel->
+  "In[950]:=",ExpressionUUID->"4304926a-dda1-b246-aaff-e9ef6799dcb8"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"{", 
+   RowBox[{"EJ", "\[Rule]", "13.898498258864967`"}], "}"}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.990023533348198*^9, {3.990097860224943*^9, 3.9900978707439003`*^9}, {
+   3.9900984871159954`*^9, 3.9900985051348267`*^9}, 3.990098549272089*^9, 
+   3.9900985884616985`*^9},
+ CellLabel->
+  "Out[955]=",ExpressionUUID->"2f284cc8-2438-fe4e-bcb8-1bfc210aacb9"],
+
+Cell[BoxData["13.898498258864967`"], "Output",
+ CellChangeTimes->{
+  3.990023533348198*^9, {3.990097860224943*^9, 3.9900978707439003`*^9}, {
+   3.9900984871159954`*^9, 3.9900985051348267`*^9}, 3.990098549272089*^9, 
+   3.9900985884616985`*^9},
+ CellLabel->
+  "Out[956]=",ExpressionUUID->"f90e1340-cb71-4c4e-9354-185a14f12cf1"],
+
+Cell[BoxData["0.19854997512664238`"], "Output",
+ CellChangeTimes->{
+  3.990023533348198*^9, {3.990097860224943*^9, 3.9900978707439003`*^9}, {
+   3.9900984871159954`*^9, 3.9900985051348267`*^9}, 3.990098549272089*^9, 
+   3.9900985884616985`*^9},
+ CellLabel->
+  "Out[957]=",ExpressionUUID->"80bacb05-fc35-2746-9c82-cc1f68012d0c"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Target EJ = \"\>", "\[InvisibleSpace]", "13.898498258864967`", 
+   "\[InvisibleSpace]", "\<\" GHz\"\>"}],
+  SequenceForm["Target EJ = ", 13.898498258864967`, " GHz"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023533355522*^9, {3.9900978602340603`*^9, 3.990097870751726*^9}, {
+   3.990098487132509*^9, 3.990098505145258*^9}, 3.9900985492884903`*^9, 
+   3.9900985884616985`*^9},
+ CellLabel->
+  "During evaluation of \
+In[950]:=",ExpressionUUID->"06f88d9b-4ec8-e043-960c-9ea134376991"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Target EC = \"\>", "\[InvisibleSpace]", "0.19854997512664238`",
+    "\[InvisibleSpace]", "\<\" GHz\"\>"}],
+  SequenceForm["Target EC = ", 0.19854997512664238`, " GHz"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023533355522*^9, {3.9900978602340603`*^9, 3.990097870751726*^9}, {
+   3.990098487132509*^9, 3.990098505145258*^9}, 3.9900985492884903`*^9, 
+   3.990098588470686*^9},
+ CellLabel->
+  "During evaluation of \
+In[950]:=",ExpressionUUID->"9f5f496a-3e0c-b043-8992-6bbafe5aafdd"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Verification - omega = \"\>", "\[InvisibleSpace]", "4.5`", 
+   "\[InvisibleSpace]", "\<\" GHz\"\>"}],
+  SequenceForm["Verification - omega = ", 4.5, " GHz"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.990023533355522*^9, {3.9900978602340603`*^9, 3.990097870751726*^9}, {
+   3.990098487132509*^9, 3.990098505145258*^9}, 3.9900985492884903`*^9, 
+   3.9900985884755898`*^9},
+ CellLabel->
+  "During evaluation of \
+In[950]:=",ExpressionUUID->"19e15ae0-4c47-4b48-8cbc-00e0aad9a210"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{574.8, 568.8},
+WindowMargins->{{36, Automatic}, {Automatic, 0}},
+FrontEndVersion->"14.0 for Microsoft Windows (64-bit) (December 12, 2023)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"588c0323-1525-4742-b94e-3614df4b374b"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 3389, 99, 447, "Input",ExpressionUUID->"4304926a-dda1-b246-aaff-e9ef6799dcb8"],
+Cell[3972, 123, 402, 9, 32, "Output",ExpressionUUID->"2f284cc8-2438-fe4e-bcb8-1bfc210aacb9"],
+Cell[4377, 134, 326, 6, 32, "Output",ExpressionUUID->"f90e1340-cb71-4c4e-9354-185a14f12cf1"],
+Cell[4706, 142, 327, 6, 32, "Output",ExpressionUUID->"80bacb05-fc35-2746-9c82-cc1f68012d0c"],
+Cell[CellGroupData[{
+Cell[5058, 152, 546, 12, 22, "Print",ExpressionUUID->"06f88d9b-4ec8-e043-960c-9ea134376991"],
+Cell[5607, 166, 546, 12, 22, "Print",ExpressionUUID->"9f5f496a-3e0c-b043-8992-6bbafe5aafdd"],
+Cell[6156, 180, 537, 12, 22, "Print",ExpressionUUID->"19e15ae0-4c47-4b48-8cbc-00e0aad9a210"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
