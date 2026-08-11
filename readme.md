@@ -4,6 +4,7 @@ This repository includes Mathematica notebooks and Jupyter notebooks for calcula
 ![qubit-resonator circuit](qubit_resonator_coupling.svg)
 
 and between two Transmons (in our case a transmon-dissipator).
+
 ![dissipator circuit](qubit_dissipator_coupling.svg)
 
 
