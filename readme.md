@@ -10,7 +10,7 @@ and between two Transmons (in our case a transmon-dissipator).
 There is also a Jupyter notebook for for developing your own circuit diagrams using `schemdraw`.
 
 # Online Calculator
-If you do not want to download the repository or Jupyter files, you can calculate these couplings [by clicking here](https://moumhecht.github.io/transmon-dissipator-cap-calcs/ "Go to Coupling Calculator")
+If you do not want to download the repository or Jupyter files, you can calculate these couplings [by clicking here](https://moumhecht.github.io/design-planning-calculations/ "Go to Coupling Calculator")
 
 # Requirements
 1. `scipy`
